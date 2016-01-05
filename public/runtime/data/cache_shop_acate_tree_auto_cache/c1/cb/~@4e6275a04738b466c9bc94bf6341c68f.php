@@ -1,0 +1,3 @@
+<?php
+//000000086400a:2:{i:0;a:11:{s:2:"id";s:2:"18";s:5:"title";s:12:"商城公告";s:5:"brief";s:0:"";s:3:"pid";s:1:"0";s:9:"is_effect";s:1:"1";s:9:"is_delete";s:1:"0";s:7:"type_id";s:1:"2";s:4:"sort";s:1:"5";s:8:"iconfont";s:0:"";s:10:"child_cate";a:0:{}s:3:"url";s:26:"/index.php?ctl=news&act=18";}i:1;a:11:{s:2:"id";s:2:"22";s:5:"title";s:12:"热门推荐";s:5:"brief";s:0:"";s:3:"pid";s:1:"0";s:9:"is_effect";s:1:"1";s:9:"is_delete";s:1:"0";s:7:"type_id";s:1:"2";s:4:"sort";s:1:"7";s:8:"iconfont";s:0:"";s:10:"child_cate";a:0:{}s:3:"url";s:26:"/index.php?ctl=news&act=22";}}
+?>

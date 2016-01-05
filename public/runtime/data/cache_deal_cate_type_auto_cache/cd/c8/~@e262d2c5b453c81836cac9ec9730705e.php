@@ -1,0 +1,3 @@
+<?php
+//000000086400a:4:{i:6;a:4:{s:2:"id";s:1:"6";s:4:"name";s:9:"自助游";s:12:"is_recommend";s:1:"1";s:4:"sort";s:1:"0";}i:7;a:4:{s:2:"id";s:1:"7";s:4:"name";s:9:"周边游";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"0";}i:8;a:4:{s:2:"id";s:1:"8";s:4:"name";s:9:"国内游";s:12:"is_recommend";s:1:"1";s:4:"sort";s:1:"0";}i:9;a:4:{s:2:"id";s:1:"9";s:4:"name";s:9:"海外游";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"0";}}
+?>

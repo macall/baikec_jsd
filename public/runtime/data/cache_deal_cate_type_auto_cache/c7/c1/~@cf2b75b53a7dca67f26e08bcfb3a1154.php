@@ -1,0 +1,3 @@
+<?php
+//000000086400a:7:{i:1;a:4:{s:2:"id";s:1:"1";s:4:"name";s:6:"咖啡";s:12:"is_recommend";s:1:"1";s:4:"sort";s:1:"0";}i:5;a:4:{s:2:"id";s:1:"5";s:4:"name";s:3:"KTV";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"0";}i:6;a:4:{s:2:"id";s:1:"6";s:4:"name";s:9:"自助游";s:12:"is_recommend";s:1:"1";s:4:"sort";s:1:"0";}i:31;a:4:{s:2:"id";s:2:"31";s:4:"name";s:12:"足疗按摩";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"1";}i:32;a:4:{s:2:"id";s:2:"32";s:4:"name";s:12:"水上世界";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"2";}i:33;a:4:{s:2:"id";s:2:"33";s:4:"name";s:12:"运动健身";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"3";}i:34;a:4:{s:2:"id";s:2:"34";s:4:"name";s:16:"采摘/农家乐";s:12:"is_recommend";s:1:"0";s:4:"sort";s:1:"4";}}
+?>

