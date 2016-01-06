@@ -100,13 +100,9 @@ class register_verify_phone{
 					//发送一样的，验证码;
 					$code = $smsSubscribe['code'];
 				}
-				
-				$message=$code."（".app_conf("SHOP_TITLE")."手机绑定验证码,请完成验证）,如非本人操作,请勿略本短信";
-				require_once APP_ROOT_PATH."system/utils/es_sms.php";
-				$sms = new sms_sender();
-				$send=$sms->sendSms($mobile_phone,$message);
-				//$send['status']=1;
-				if($send['status'])
+                                require_once APP_ROOT_PATH."system/ali_sms/sms.php";
+                                $result = sendSMSAli($mobile_phone,$code);
+                                if(!empty($result))
 				{		
 					$add_time = get_gmtime();
 					$re=$GLOBALS['db']->query("insert into ".DB_PREFIX."sms_mobile_verify(mobile_phone,code,add_time,send_count,ip) values('$mobile_phone','$code','$add_time',1,"."'".CLIENT_IP."')");
@@ -129,6 +125,35 @@ class register_verify_phone{
 					$root['info']="发送失败".$send['msg'];
 					$root['status']=0;
 				}
+                                
+//				$message=$code."（".app_conf("SHOP_TITLE")."手机绑定验证码,请完成验证）,如非本人操作,请勿略本短信";
+//				require_once APP_ROOT_PATH."system/utils/es_sms.php";
+//				$sms = new sms_sender();
+//				$send=$sms->sendSms($mobile_phone,$message);
+//				//$send['status']=1;
+//				if($send['status'])
+//				{		
+//					$add_time = get_gmtime();
+//					$re=$GLOBALS['db']->query("insert into ".DB_PREFIX."sms_mobile_verify(mobile_phone,code,add_time,send_count,ip) values('$mobile_phone','$code','$add_time',1,"."'".CLIENT_IP."')");
+//					/*插入一条发送成功记录到队列表中*/
+//					$msg_data['dest'] = $mobile_phone;
+//					$msg_data['send_type'] = 0;
+//					$msg_data['content'] = addslashes($message);;
+//					$msg_data['send_time'] = $add_time;
+//					$msg_data['is_send'] = 1;
+//					$msg_data['is_success'] = 1;
+//					$msg_data['create_time'] = $add_time;
+//					$msg_data['user_id'] = intval($have_user_id);
+//					$msg_data['title'] = "手机号绑定验证";
+//					$GLOBALS['db']->autoExecute(DB_PREFIX."deal_msg_list",$msg_data);
+//					$root['info']="验证码发出,请注意查收";
+//					$root['status']=1;
+//				}
+//				else
+//				{				
+//					$root['info']="发送失败".$send['msg'];
+//					$root['status']=0;
+//				}
 			
 		}
 		output($root);
