@@ -1,3 +1,3 @@
 <?php
-//000000000300a:2:{i:0;a:6:{s:2:"id";s:2:"27";s:4:"name";s:9:"优惠券";s:9:"icon_name";s:10:"fa fa-tags";s:5:"color";s:7:"#f6606c";s:3:"img";s:0:"";s:3:"url";s:67:"http://baikec.zuoyounet.cn/wap/index.php?ctl=goodslist&catalog_id=0";}i:1;a:6:{s:2:"id";s:2:"28";s:4:"name";s:12:"经典商家";s:9:"icon_name";s:8:"&#58898;";s:5:"color";s:7:"#3ed087";s:3:"img";s:69:"http://baikec.zuoyounet.cn/public/attachment/sjmapi/546c65928f3fd.png";s:3:"url";s:0:"";}}
+//000000000300a:2:{i:0;a:6:{s:2:"id";s:2:"27";s:4:"name";s:9:"优惠券";s:9:"icon_name";s:10:"fa fa-tags";s:5:"color";s:7:"#f6606c";s:3:"img";s:0:"";s:3:"url";s:58:"http://www.jsd.cm/wap/index.php?ctl=goodslist&catalog_id=0";}i:1;a:6:{s:2:"id";s:2:"28";s:4:"name";s:12:"经典商家";s:9:"icon_name";s:8:"&#58898;";s:5:"color";s:7:"#3ed087";s:3:"img";s:60:"http://www.jsd.cm/public/attachment/sjmapi/546c65928f3fd.png";s:3:"url";s:0:"";}}
 ?>

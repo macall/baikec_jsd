@@ -340,8 +340,7 @@ if($request_param['post_type']!='json'){
 		
 		$request_data=$GLOBALS['transport']->request($request_url,$request_param);
 	}
-        echo "<pre>";
-        die(var_dump($request_data));
+
 	$data=$request_data['body'];
 
 	$data=json_decode(base64_decode($data),1);

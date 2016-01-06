@@ -1,3 +1,0 @@
-<?php
-//000000086400a:3:{i:38;a:5:{s:3:"url";s:26:"/index.php?ctl=cate&cid=38";s:9:"score_url";s:28:"/index.php?ctl=scores&cid=38";s:4:"name";s:6:"手机";s:2:"id";s:2:"38";s:3:"pid";s:2:"35";}i:39;a:5:{s:3:"url";s:26:"/index.php?ctl=cate&cid=39";s:9:"score_url";s:28:"/index.php?ctl=scores&cid=39";s:4:"name";s:9:"小家电";s:2:"id";s:2:"39";s:3:"pid";s:2:"35";}i:40;a:5:{s:3:"url";s:26:"/index.php?ctl=cate&cid=40";s:9:"score_url";s:28:"/index.php?ctl=scores&cid=40";s:4:"name";s:12:"家用电器";s:2:"id";s:2:"40";s:3:"pid";s:2:"35";}}
-?>

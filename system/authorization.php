@@ -4,7 +4,7 @@ error_reporting(0);
 define("APP_TYPE","main");
 function init_checker() 
 {
-	$domain_array = array( base64_encode(base64_encode('www.baike.cm')), );
+	$domain_array = array( base64_encode(base64_encode('www.jsd.cm')), );
 	$str = base64_encode(base64_encode(serialize($domain_array))."|".serialize($domain_array));
 	$arr = explode("|",base64_decode($str));
 	$arr = unserialize($arr[1]);
@@ -16,7 +16,6 @@ function init_checker()
 	$host = explode(":",$host);
 	$host = $host[0];
 	$passed = false;
-        //var_dump($arr);exit;
 	foreach($arr as $k=>$v) 
 	{
 		if(substr($v,0,2)=='*.') 
