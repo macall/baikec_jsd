@@ -9,6 +9,7 @@
 
 define("FILE_PATH",""); //文件目录，空为根目录
 require_once './system/system_init.php';
+
 if (isMobile() && !isset($_REQUEST['is_pc']) && es_cookie::get("is_pc")!=1 && file_exists("./wap/index.php") && strim($_REQUEST['ctl'])!="app_download"){
 	app_redirect("./wap/index.php");
 }else{
