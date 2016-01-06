@@ -4,16 +4,17 @@ class register{
 	public function index()
 	{
 //		$email = strim($GLOBALS['request']['email']);//邮箱
-                $mobile = strim($GLOBALS['request']['mobile']);//邮箱
+                $email = strim($GLOBALS['request']['mobile']);//邮箱
+                $mobile = $email;
 		$pwd = strim($GLOBALS['request']['password']);//密码
+                $user_name = $email;//邮箱
+                $code = strim($GLOBALS['request']['code']);
 //		$user_name = strim($GLOBALS['request']['user_name']);//用户名
 //		$gender = intval($GLOBALS['request']['gender']);
-                $code = strim($GLOBALS['request']['code']);
-//		$ref_uid = intval($GLOBALS['request']['ref_uid']);
+		$ref_uid = intval($GLOBALS['request']['ref_uid']);
 //		$city_name =strim($GLOBALS['request']['city_name']);//城市名称
-		
                 
-                if($mobile == '')
+		if($mobile == '')
 		{
 			$root['status'] = 0;
 			$root['info'] = '手机号码不能为空';
@@ -54,6 +55,7 @@ class register{
 		//$GLOBALS['db']->query("update ".DB_PREFIX."sms_mobile_verify set status = 1 where id=".$db_code['id']."");
 		
 		$GLOBALS['db']->query("delete from ".DB_PREFIX."sms_mobile_verify where id=".$db_code['id']."");
+
 		if(strlen($pwd)<4)
 		{
 			$root['return'] = 0;
@@ -61,10 +63,10 @@ class register{
 		}
 		else
 		{
-			$user_data['mobile'] = $mobile;
-//			$user_data['user_name'] = $user_name;
+			$user_data['email'] = $email;
+			$user_data['user_name'] = $user_name;
 			$user_data['user_pwd'] = $pwd;
-//			$user_data['sex'] = $gender;
+			$user_data['sex'] = '-1';
 			if($ref_uid)
 				$user_data['pid']=$ref_uid;
 			else 
@@ -79,8 +81,8 @@ class register{
 				$root['info']	=	"注册成功";
 				$root['uid'] = $res['data'];
 				$root['id'] = $res['data'];
-//				$root['user_name'] = $user_name;
-				$root['user_mobile'] = $mobile;	
+				$root['user_name'] = $user_name;
+				$root['user_email'] = $email;	
 				$root['user_avatar'] = get_abs_img_root(get_muser_avatar($root['uid'],"big"));		
 				$root['user_pwd'] = $res['user_pwd'];	
 				
@@ -124,7 +126,7 @@ class register{
 		$root['login_type'] = "Qq";
 	}
 	$root['page_title'] ='注册';
-//	$root['city_name']=$city_name;
+	$root['city_name']=$city_name;
 	output($root);
 		
 	}

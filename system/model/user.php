@@ -139,14 +139,14 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 	{		
 		//开始数据验证
 		$res = array('status'=>1,'info'=>'','data'=>''); //用于返回的数据
-//		if(trim($user_data['user_name'])=='')
-//		{
-//			$field_item['field_name'] = 'user_name';
-//			$field_item['error']	=	EMPTY_ERROR;
-//			$res['status'] = 0;
-//			$res['data'] = $field_item;
-//			return $res;
-//		}
+		if(trim($user_data['user_name'])=='')
+		{
+			$field_item['field_name'] = 'user_name';
+			$field_item['error']	=	EMPTY_ERROR;
+			$res['status'] = 0;
+			$res['data'] = $field_item;
+			return $res;
+		}
 //		if(!check_username($user_data['user_name']))
 //		{
 //			$field_item['field_name'] = 'user_name';
@@ -155,30 +155,30 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 //			$res['data'] = $field_item;
 //			return $res;
 //		}
-//		if($GLOBALS['db']->getOne("select count(*) from ".DB_PREFIX."user where (user_name = '".trim($user_data['user_name'])."' or mobile = '".trim($user_data['user_name'])."' or email = '".trim($user_data['user_name'])."') and id <> ".intval($user_data['id']))>0)
-//		{
-//			$field_item['field_name'] = 'user_name';
-//			$field_item['error']	=	EXIST_ERROR;
-//			$res['status'] = 0;
-//			$res['data'] = $field_item;
-//			return $res;
-//		}
-//		if($GLOBALS['db']->getOne("select count(*) from ".DB_PREFIX."user where (user_name = '".trim($user_data['email'])."' or mobile = '".trim($user_data['email'])."' or email = '".trim($user_data['email'])."') and id <> ".intval($user_data['id']))>0)
-//		{
-//			$field_item['field_name'] = 'email';
-//			$field_item['error']	=	EXIST_ERROR;
-//			$res['status'] = 0;
-//			$res['data'] = $field_item;
-//			return $res;
-//		}
-//		if(trim($user_data['email'])=='')
-//		{
-//			$field_item['field_name'] = 'email';
-//			$field_item['error']	=	EMPTY_ERROR;
-//			$res['status'] = 0;
-//			$res['data'] = $field_item;
-//			return $res;
-//		}
+		if($GLOBALS['db']->getOne("select count(*) from ".DB_PREFIX."user where (user_name = '".trim($user_data['user_name'])."' or mobile = '".trim($user_data['user_name'])."' or email = '".trim($user_data['user_name'])."') and id <> ".intval($user_data['id']))>0)
+		{
+			$field_item['field_name'] = 'user_name';
+			$field_item['error']	=	EXIST_ERROR;
+			$res['status'] = 0;
+			$res['data'] = $field_item;
+			return $res;
+		}
+		if($GLOBALS['db']->getOne("select count(*) from ".DB_PREFIX."user where (user_name = '".trim($user_data['email'])."' or mobile = '".trim($user_data['email'])."' or email = '".trim($user_data['email'])."') and id <> ".intval($user_data['id']))>0)
+		{
+			$field_item['field_name'] = 'email';
+			$field_item['error']	=	EXIST_ERROR;
+			$res['status'] = 0;
+			$res['data'] = $field_item;
+			return $res;
+		}
+		if(trim($user_data['email'])=='')
+		{
+			$field_item['field_name'] = 'email';
+			$field_item['error']	=	EMPTY_ERROR;
+			$res['status'] = 0;
+			$res['data'] = $field_item;
+			return $res;
+		}
 //		if(!check_email(trim($user_data['email'])))
 //		{
 //			$field_item['field_name'] = 'email';
@@ -208,9 +208,7 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 
 		
 		//验证结束开始插入数据
-//		$user['user_name'] = $user_data['user_name'];
-                if(isset($user_data['user_name']))
-                $user['user_name'] = $user_data['user_name'];
+		$user['user_name'] = $user_data['user_name'];
 		$user['create_time'] = NOW_TIME;
 		$user['update_time'] = NOW_TIME;
 		$user['pid'] = $user_data['pid'];
@@ -220,7 +218,6 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 		$user['city_id'] = intval($user_data['city_id']);
 		if(isset($user_data['sex']))
 		$user['sex'] = intval($user_data['sex']);
-                if(isset($user_data['my_intro']))
 		$user['my_intro'] = strim($user_data['my_intro']);
 		if(isset($user_data['byear']))
 		$user['byear'] = intval($user_data['byear']);
@@ -265,7 +262,6 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 			}
 		}
 		
-                
 		$user['email'] = $user_data['email'];
 		$user['mobile'] = $user_data['mobile'];
 		if($mode == 'INSERT')

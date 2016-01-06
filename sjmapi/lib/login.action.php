@@ -3,7 +3,7 @@ class login{
 	public function index()
 	{
 		require_once APP_ROOT_PATH."system/model/user.php";
-		$email = strim($GLOBALS['request']['email']);//用户名或邮箱
+		$email = strim($GLOBALS['request']['mobile']);//用户名或邮箱
 		$pwd = strim($GLOBALS['request']['pwd']);//密码
 		$city_name =strim($GLOBALS['request']['city_name']);//城市名称
 		

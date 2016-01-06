@@ -1,4 +1,86 @@
-{include file="./inc/header.html"}
+{include file="./inc/header_logined.html"}
+        <section class="My_order">
+            <p id="my_order">我的订单</p>
+            <ul id="my_order_list">
+                <li class="top_nav_1">
+                    <a href="{$order_list_url}">
+                        <img src="./css/jsd/images/chakan_q.png">
+                        <P>订单查看</P>
+                    </a>
+                </li>
+                <li class="top_nav_2">
+                    <a href="{$order_compaints_url}">
+                        <img src="./css/jsd/images/tous.png">
+                        <P>订单投诉</P>
+                    </a>
+                </li>
+                <li class="top_nav_3">
+                    <a href="{$commont_list_url}">
+                        <img src="./css/jsd/images/pinj.png">
+                        <p>评价</p>
+                    </a>
+                </li>
+                <li class="top_nav_4">
+                    <a href="{$refund_url}">
+                        <img src="./css/jsd/images/tuik.png">
+                        <P>退款</P>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    <section class="My_wallet">
+        <p id="my_wallet">我的钱包</p>
+        <ul id="my_wallet_list">
+            <li class="erji_nav_1">
+                <a href="{$payment_url}">
+                    <img src="./css/jsd/images/zhangh.png">
+                    <P>账户充值</P>
+                </a>
+            </li>
+            <li class="erji_nav_2">
+                <a href="{$balance_url}">
+                    <img src="./css/jsd/images/yue.png">
+                    <P>余额查询</P>
+                </a>
+            </li>
+            <li class="erji_nav_3">
+                <a href="{$coupon_url}">
+                    <img src="./css/jsd/images/youyh.png">
+                    <p>优惠券</p>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <section class="Set_up_the">
+        <a href="{$setting_url}">设置</a>
+    </section>
+</section>
+<script>
+$(document).ready(function(){
+    //个人资料
+    $("#my_order").click(function(){
+        $("#my_order_list").slideToggle();
+    });
+
+    //密码
+    $("#my_wallet").click(function(){
+        $("#my_wallet_list").slideToggle();
+    });
+})    
+</script>
+{include file="./inc/footer.html"} 
+<!--
+
+
+
+
+
+
+
+
+
+
+
 <div class="wrap">
 	<div class="content">
 					
@@ -71,7 +153,7 @@
 				       	    	    </div>
 				       	        </a>
 							</li>
-							<!--li>
+							li>
 				       	    	<a href="">
 				       	    	    <div class="per_li">
 				       	    	    	<i class="fa fa-bullhorn "></i>
@@ -98,7 +180,7 @@
 				       	    	    </div>
 				       	        </a>
 							</li>
-							-->
+							
 							<li>
 		       	    	<a href="{wap_url a="index" r="collect_list#index"}">
 		       	    	    <div class="per_li">
@@ -124,7 +206,7 @@
    
                  <div class="list-view">
 				       <ul class="person_details one">
-				       	    <!--li>
+				       	    li>
 				       	    	<a href="">
 				       	    	    <div class="per_li">
 				       	    	    	<i class="fa fa-bullhorn "></i>
@@ -141,7 +223,7 @@
 										<i class="fa fa-chevron-right"></i>
 				       	    	    </div>
 				       	        </a>
-							</li-->
+							</li
 							<li>
 				       	    	<a href="{wap_url a="index" r="pwd#index"}">
 				       	    	    <div class="per_li">
@@ -159,5 +241,4 @@
 				 
 				</div>
 
-</div>
-{include file="./inc/footer.html"} 
+</div>-->
