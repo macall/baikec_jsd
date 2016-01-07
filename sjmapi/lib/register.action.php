@@ -65,6 +65,7 @@ class register{
 		{
 			$user_data['email'] = $email;
 			$user_data['user_name'] = $user_name;
+                        $user_data['mobile'] = $mobile;
 			$user_data['user_pwd'] = $pwd;
 			$user_data['sex'] = '-1';
 			if($ref_uid)

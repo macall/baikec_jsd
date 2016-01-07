@@ -1,92 +1,290 @@
-{include file="./inc/header.html"}
-<?php
-		$this->_var['parse_pagecss'][] = $this->_var['TMPL_REAL']."/css/change_password.css";
+{include file="./inc/header_logined.html"}
+<script type="text/javascript" src="{$PC_URL}/public/runtime/region.js"></script>
+<section class="set_up">
+    <form>
+        <p class="tietin" id='p_info'>个人资料</p>
+        <ul class="zilao" style="display: none;">
+            <li>
+                <span>手机</span>
+                <i>{$data.mobile}</i>
+            </li>
+<!--            <li>
+                <span>邮箱</span>
+                <input type="text" id="email" value="{$jsd_user_data.email}">
+            </li>-->
+            <li>
+                <span>地址</span>
+
+                <select name="region_lv2" class="ui-select region_select" height="300">
+                    <option value="0">={lang v="SELECT_PLEASE"}=</option>
+                    {foreach from=$data.region_lv2 item=lv2}
+                    <option {if $lv2.selected eq 1}selected="selected"{/if} value="{$lv2.id}">{$lv2.name}</option>
+                    {/foreach}
+                </select>
+                <select name="region_lv3" class="ui-select region_select" height="300">
+                    <option value="0">={lang v="SELECT_PLEASE"}=</option>		
+                    {foreach from=$data.region_lv3 item=lv3}
+                    <option {if $lv3.selected eq 1}selected="selected"{/if} value="{$lv3.id}">{$lv3.name}</option>
+                    {/foreach}
+                </select>
+
+                <select name="region_lv4" class="ui-select region_select" height="300">
+                    <option value="0">={lang v="SELECT_PLEASE"}=</option>
+                    {foreach from=$data.region_lv4 item=lv4}
+                    <option {if $lv4.selected eq 1}selected="selected"{/if} value="{$lv4.id}">{$lv4.name}</option>
+                    {/foreach}
+                </select>
+                <input type="text" id="address_detail" value="<?php echo $GLOBALS['jsd_user_data']['address_detail'];?>">
+            </li>
+            <li>
+                <span>生日</span>
+                <select id="settings_byear" name="byear" class="ui-select" height="200">
+                    <option value="0">年</option>
+                    <?php for($i = date("Y") ;$i>=date("Y")-100; $i--){ ?>
+                    <option value="<?php echo $i; ?>" <?php if($i==$GLOBALS['jsd_user_data']['byear']){echo 'selected="selected"';} ?>><?php echo $i; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+                <select id="settings_bmonth" name="bmonth" class="ui-select" height="200">
+                    <option value="0">月</option>
+                    <?php for($i = 1 ;$i<=12; $i++){ ?>
+                    <option value="<?php echo $i; ?>"  <?php if($i==$GLOBALS['jsd_user_data']['bmonth']){echo 'selected="selected"';} ?>><?php echo $i; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+                <select id="settings_bday" name="bday" class="ui-select" height="200">
+                    <option value="0">日</option>
+                    <?php for($i = 1 ;$i<=31; $i++){ ?>
+                    <option value="<?php echo $i; ?>" <?php if($i==$GLOBALS['jsd_user_data']['bday']){echo 'selected="selected"';} ?>><?php echo $i; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+                <span>称呼</span>
+                <input type="text" id="user_name" value="{$jsd_user_data.user_name}">
+            </li>
+        </ul>            
+        <p class="tietin" id='pwd_change'>修改密码</p>
+        <ul class="paoswodr" style="display: none;border-top: 1px">
+            <li>
+                <span>旧密码</span>
+                <input type="password" id="origin_pwd">
+            </li>
+            <li>
+                <span>设置新密码</span>
+                <input type="password" id="new_pwd">
+            </li>
+            <li>
+                <span>确认新密码</span>
+                <input type="password" id="new_pwd_rep">
+            </li>
+        </ul>
+        <ul class="botton">
+            <input type="button" value="确认修改" onclick="update_form()">
+        </ul>
+
+        <input type="hidden" id='update_type' value="0">
+    </form>
+</section>
+</section>
+<script>
+    /**
+     * 初始化地区切换事件
+     */
+    function init_region_ui_change() {
+
+        $.load_select = function (lv)
+        {
+            var name = "region_lv" + lv;
+            var next_name = "region_lv" + (parseInt(lv) + 1);
+            var id = $("select[name='" + name + "']").val();
+
+            var default_text = "选择地址";
+
+            if (lv == 2) {
+                var evalStr = "regionConf.r1.c.r" + id + ".c";
+                default_text = '所在城市';
+            }
+            if (lv == 3) {
+                var evalStr = "regionConf.r1.c.r" + $("select[name='region_lv2']").val() + ".c.r" + id + ".c";
+                default_text = '所在区域';
+            }
+
+
+            if (id == 0)
+            {
+                var html = "<option value='0'>=" + default_text + "=</option>";
+            } else
+            {
+                var regionConfs = eval(evalStr);
+                evalStr += ".";
+                var html = "<option value='0'>=" + default_text + "=</option>";
+                for (var key in regionConfs)
+                {
+                    html += "<option value='" + eval(evalStr + key + ".i") + "'>" + eval(evalStr + key + ".n") + "</option>";
+                }
+            }
+            $("select[name='" + next_name + "']").html(html);
+            $("select[name='" + next_name + "']").ui_select({refresh: true});
+            if (lv == 4)
+            {
+            } else
+            {
+                $.load_select(parseInt(lv) + 1);
+            }
+        };
+
+        $("select[name='region_lv2']").bind("change", function () {
+            $.load_select("2");
+        });
+        $("select[name='region_lv3']").bind("change", function () {
+            $.load_select("3");
+        });
+        $("select[name='region_lv4']").bind("change", function () {
+            $.load_select("4");
+        });
+    }
+
+    $(document).ready(function () {
+        init_region_ui_change();
+        //个人资料
+        $("#p_info").click(function () {
+            $(".zilao").slideToggle('normal', function () {
+//                check_update_type();
+            });
+        });
+
+        //密码
+        $("#pwd_change").click(function () {
+            $(".paoswodr").slideToggle('normal', function () {
+//                check_update_type();
+            });
+        });
+
+        //天数计算
+        $("#settings_bmonth,#settings_byear").bind("change", function () {
+            var m = parseInt($("#settings_bmonth").val());
+            var y = parseInt($("#settings_byear").val());
+            if (m > 0 && y > 0) {
+                var d = parseInt($("#settings_bday").val());
+                day = load_month_day(y, m);
+                var html = "<option value='0'>日</option>";
+                for (i = 1; i <= day; i++) {
+                    html += "<option value='" + i + "'>" + i + "</option>";
+                }
+                $("#settings_bday").html(html);
+                $("#settings_bday").val(d);
+                $("#settings_bday").ui_select({refresh: true});
+            }
+        });
+    });
+
+    /**
+     * 加载月份中的天数
+     * @param $year  年份
+     * @param $month 月份 1-12
+     */
+    function load_month_day(year, month)
+    {
+        var monthday = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];  //12个月份的默认天数
+        if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) { //闰年
+            monthday[1] = 29;
+        }
+        return monthday[month - 1];
+    }
+</script>
+<!--<?php
+                $this->_var['parse_pagecss'][] = $this->_var['TMPL_REAL']."/css/change_password.css";
 ?>
 <link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$parse_pagecss"}" />
 
 <div class="wrap">
 
-	<div class="content">
-		<form id="form" method="post" action="{wap_url a="index" r="pwd"}" onsubmit="return check(this)">
-					<div class="change_block">
-					      <h3>{$data.user_name}</h3>
-						  <div class="input_b">
-						  	<div class="input_i">
-						  		 <i class="fa fa-lock"></i>
-						  	</div>
-							<div class="input_text">
-								<input type="text" placeholder="请输入原始密码" type="password" name="old_pwd" autocomplete="off"  id="old_pwd">
-							</div>
-						  </div>
-						  <div class="blank10"></div>
-						   <div class="input_b">
-						  	<div class="input_i">
-						  		 <i class="fa fa-lock"></i>
-						  	</div>
-							<div class="input_text">
-								<input type="text" placeholder="请输入新密码" type="password" name="newpassword" autocomplete="off" id="newpassword">
-							</div>
-						  </div>
-						  <div class="blank10"></div>
-						   <div class="input_b">
-						  	<div class="input_i">
-						  		 <i class="fa fa-lock"></i>
-						  	</div>
-							<div class="input_text">
-								<input type="text" placeholder="请再次输入新密码" type="password" name="newpassword2" autocomplete="off" id="newpassword2">
-							</div>
-						  </div>
-						 <div class="sure_b">
-						 	<button type="submit" >确认修改</button>
-				            
-				         </div>
-					</div>
-					</form>
-				</div>
+        <div class="content">
+                <form id="form" method="post" action="{wap_url a="index" r="pwd"}" onsubmit="return check(this)">
+                                        <div class="change_block">
+                                              <h3>{$data.user_name}</h3>
+                                                  <div class="input_b">
+                                                        <div class="input_i">
+                                                                 <i class="fa fa-lock"></i>
+                                                        </div>
+                                                        <div class="input_text">
+                                                                <input type="text" placeholder="请输入原始密码" type="password" name="old_pwd" autocomplete="off"  id="old_pwd">
+                                                        </div>
+                                                  </div>
+                                                  <div class="blank10"></div>
+                                                   <div class="input_b">
+                                                        <div class="input_i">
+                                                                 <i class="fa fa-lock"></i>
+                                                        </div>
+                                                        <div class="input_text">
+                                                                <input type="text" placeholder="请输入新密码" type="password" name="newpassword" autocomplete="off" id="newpassword">
+                                                        </div>
+                                                  </div>
+                                                  <div class="blank10"></div>
+                                                   <div class="input_b">
+                                                        <div class="input_i">
+                                                                 <i class="fa fa-lock"></i>
+                                                        </div>
+                                                        <div class="input_text">
+                                                                <input type="text" placeholder="请再次输入新密码" type="password" name="newpassword2" autocomplete="off" id="newpassword2">
+                                                        </div>
+                                                  </div>
+                                                 <div class="sure_b">
+                                                        <button type="submit" >确认修改</button>
+                                            
+                                         </div>
+                                        </div>
+                                        </form>
+                                </div>
 </div>				
 <script type="text/javascript">
-	function  check(){
-		var old_pwd=$("#old_pwd").val();
-		var obj2=$("#newpassword").val();
-		var obj3=$("#newpassword2").val();
-		if(!old_pwd){
-			alert("请填密码");
-			return false;		
-		}
-		if(!obj2){
-			alert("请填新的密码");
-			return false;		
-		}	
-		if(!obj3){
-			alert("请填确认新的密码");
-			return false;
-		}
-		if(obj2!=obj3){
-			alert("两次密码不一致");
-			return false;
-		}	
-		var query = new Object();
-		query.old_pwd = old_pwd;
-		query.newpassword = obj2;
-		query.post_type = "json";
-		var ajaxurl =$("#form").attr("action");
-		$.ajax({
-			url:ajaxurl,
-			data:query,
-			type:"post",
-			dataType:"json",
-			success:function(data){
-				alert(data.info);
-				if(data.return==1){ 
-					window.location.href="{wap_url a="index" r="user_center#index"}";
-				}
-			}
-			,error:function(){
-				alert("服务器提交错误");
-			}
-		});	
-		return false;
-	}
-</script>	
+        function  check(){
+                var old_pwd=$("#old_pwd").val();
+                var obj2=$("#newpassword").val();
+                var obj3=$("#newpassword2").val();
+                if(!old_pwd){
+                        alert("请填密码");
+                        return false;		
+                }
+                if(!obj2){
+                        alert("请填新的密码");
+                        return false;		
+                }	
+                if(!obj3){
+                        alert("请填确认新的密码");
+                        return false;
+                }
+                if(obj2!=obj3){
+                        alert("两次密码不一致");
+                        return false;
+                }	
+                var query = new Object();
+                query.old_pwd = old_pwd;
+                query.newpassword = obj2;
+                query.post_type = "json";
+                var ajaxurl =$("#form").attr("action");
+                $.ajax({
+                        url:ajaxurl,
+                        data:query,
+                        type:"post",
+                        dataType:"json",
+                        success:function(data){
+                                alert(data.info);
+                                if(data.return==1){ 
+                                        window.location.href="{wap_url a="index" r="user_center#index"}";
+                                }
+                        }
+                        ,error:function(){
+                                alert("服务器提交错误");
+                        }
+                });	
+                return false;
+        }
+</script>	-->
 
 {include file="./inc/footer.html"} 

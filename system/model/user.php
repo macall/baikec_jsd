@@ -208,6 +208,7 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 
 		
 		//验证结束开始插入数据
+                $user['service_type_id'] = $user_data['service_type_id'];
 		$user['user_name'] = $user_data['user_name'];
 		$user['create_time'] = NOW_TIME;
 		$user['update_time'] = NOW_TIME;

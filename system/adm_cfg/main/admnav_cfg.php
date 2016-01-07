@@ -165,10 +165,13 @@ return array(
 							"name"	=>	"会员管理",
 							"key"	=>	"user",
 							"nodes"	=>	array(
-									array("name"=>"会员列表","module"=>"User","action"=>"index"),
-									array("name"=>"会员回收站","module"=>"User","action"=>"trash"),
-									array("name"=>"会员提现","module"=>"User","action"=>"withdrawal_index"),
-									array("name"=>"达人申请列表","module"=>"DarenSubmit","action"=>"index"),
+//									array("name"=>"会员列表","module"=>"User","action"=>"index"),
+//									array("name"=>"会员回收站","module"=>"User","action"=>"trash"),
+//									array("name"=>"会员提现","module"=>"User","action"=>"withdrawal_index"),
+//									array("name"=>"达人申请列表","module"=>"DarenSubmit","action"=>"index"),
+                                                                        array("name"=>"技师达会员","module"=>"JsdUser","action"=>"index"),
+                                                                        array("name"=>"技师","module"=>"JsdTech","action"=>"index"),
+                                                                        array("name"=>"经理","module"=>"JsdManager","action"=>"index"),
 							),
 					),
 					"userconf"	=>	array(
@@ -176,9 +179,9 @@ return array(
 							"key"	=>	"userconf",
 							"nodes"	=>	array(
 //									array("name"=>"会员字段列表","module"=>"UserField","action"=>"index"),
-									array("name"=>"会员组别列表","module"=>"UserGroup","action"=>"index"),
-									array("name"=>"会员等级列表","module"=>"UserLevel","action"=>"index"),
-									array("name"=>"勋章列表","module"=>"Medal","action"=>"index"),
+									array("name"=>"会员类别列表","module"=>"ServiceType","action"=>"index"),
+									array("name"=>"技师星级列表","module"=>"ServiceLevel","action"=>"index"),
+//									array("name"=>"勋章列表","module"=>"Medal","action"=>"index"),
 							),
 					),
 					"referral"	=>	array(
