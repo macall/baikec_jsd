@@ -208,6 +208,10 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 
 		
 		//验证结束开始插入数据
+                if(isset($user_data['service_level_id']) && $user_data['service_level_id'] != 0)
+                $user['service_level_id'] = $user_data['service_level_id'];
+                if(isset($user_data['belong_to_manager_id']) && $user_data['belong_to_manager_id'] != 0)
+                $user['p_id'] = $user_data['belong_to_manager_id'];
                 $user['service_type_id'] = $user_data['service_type_id'];
 		$user['user_name'] = $user_data['user_name'];
 		$user['create_time'] = NOW_TIME;

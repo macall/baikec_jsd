@@ -4,7 +4,7 @@
 <load href='__TMPL__Common/js/user_edit.js' />
 <load href='__TMPL__Common/js/conf.js' />
 <div class="main">
-    <div class="main_title">{%ADD} <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="main_title">{%ADD} <a href="{:u("JsdTech/index")}" class="back_list">{%BACK_LIST}</a></div>
     <div class="blank5"></div>
     <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
         <div class="button_row">
@@ -38,10 +38,10 @@
             </tr>
 
             <!--会员星级:-->
-            <tr  <!--id="service_level"-->>
+            <tr>
                 <td class="item_title">{%USER_IS_MERCHANT}:</td>
                 <td class="item_input">
-                    <select name="is_merchant">
+                    <select name="service_level_id">
                         <foreach name="service_level_list" item="service_level_item">
                             <option value="{$service_level_item.id}">{$service_level_item.levelname}</option>
                         </foreach>
@@ -51,9 +51,10 @@
             <tr  id="manager_list">
                 <td class="item_title">所属经理:</td>
                 <td class="item_input">
-                    <select name="belong_to_manager">
+                    <select name="belong_to_manager_id">
+                        <option value="0">选择经理</option>
                         <foreach name="manager_list" item="manager_item">
-                            <option value="{$service_level_item.id}">{$service_level_item.levelname}</option>
+                            <option value="{$manager_item.id}">{$manager_item.user_name}</option>
                         </foreach>
                     </select>
                 </td>
@@ -128,7 +129,7 @@
             <tr>
                 <td colspan=2 class="bottomTd"></td>
             </tr>
-        </table> 		 
+        </table> 
     </form>
 </div>
 <include file="Public:footer" />
