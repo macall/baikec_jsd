@@ -297,6 +297,63 @@ class JsdTechAction extends CommonAction
                 $this->error(L("NO_RESULT"));
         }
     }
+    public function delete() 
+    {
+        //删除指定记录
+        $ajax = intval($_REQUEST['ajax']);
+        $id = $_REQUEST ['id'];
+        if (isset($id)) {
+            //删除验证
+            if (M("DealOrder")->where(array('user_id' => array('in', explode(',', $id))))->count() > 0) {
+                $this->error(l("ORDER_EXIST_DELETE_FAILED"), $ajax);
+            }
+            $condition = array('id' => array('in', explode(',', $id)));
+            $rel_data = M('User')->where($condition)->findAll();
+            foreach ($rel_data as $data) {
+                $info[] = $data['user_name'];
+            }
+            if ($info)
+                $info = implode(",", $info);
+            $list = M('User')->where($condition)->setField('is_delete', 1);
+            if ($list !== false) {
+                //把信息屏蔽
+                M("Topic")->where("user_id in (" . $id . ")")->setField("is_effect", 0);
+                M("TopicReply")->where("user_id in (" . $id . ")")->setField("is_effect", 0);
+                M("Message")->where("user_id in (" . $id . ")")->setField("is_effect", 0);
+                save_log($info . l("DELETE_SUCCESS"), 1);
+                $this->success(l("DELETE_SUCCESS"), $ajax);
+            } else {
+                save_log($info . l("DELETE_FAILED"), 0);
+                $this->error(l("DELETE_FAILED"), $ajax);
+            }
+        } else {
+            $this->error(l("INVALID_OPERATION"), $ajax);
+        }
+    }
+    public function foreverdelete() 
+    {
+        //彻底删除指定记录
+        $ajax = intval($_REQUEST['ajax']);
+        $id = $_REQUEST ['id'];
+        if (isset($id)) {
+            $condition = array('id' => array('in', explode(',', $id)));
+            $rel_data = M('User')->where($condition)->findAll();
+            foreach ($rel_data as $data) {
+                $info[] = $data['user_name'];
+            }
+            if ($info)
+                $info = implode(",", $info);
+            $ids = explode(',', $id);
+            foreach ($ids as $uid) {
+                delete_user($uid);
+            }
+            save_log($info . l("FOREVER_DELETE_SUCCESS"), 1);
+
+            $this->success(l("FOREVER_DELETE_SUCCESS"), $ajax);
+        } else {
+            $this->error(l("INVALID_OPERATION"), $ajax);
+        }
+    }
 
 }
 

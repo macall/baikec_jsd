@@ -169,7 +169,7 @@ return array(
 //									array("name"=>"会员回收站","module"=>"User","action"=>"trash"),
 //									array("name"=>"会员提现","module"=>"User","action"=>"withdrawal_index"),
 //									array("name"=>"达人申请列表","module"=>"DarenSubmit","action"=>"index"),
-                                                                        array("name"=>"技师达会员","module"=>"JsdUser","action"=>"index"),
+                                                                        array("name"=>"会员","module"=>"JsdUser","action"=>"index"),
                                                                         array("name"=>"技师","module"=>"JsdTech","action"=>"index"),
                                                                         array("name"=>"经理","module"=>"JsdManager","action"=>"index"),
 							),
@@ -184,55 +184,55 @@ return array(
 //									array("name"=>"勋章列表","module"=>"Medal","action"=>"index"),
 							),
 					),
-					"referral"	=>	array(
-							"name"	=>	"会员返利",
-							"key"	=>	"referral",
-							"nodes"	=>	array(
-									array("name"=>"邀请返利列表","module"=>"Referrals","action"=>"index"),
-							),
-					),
-					"notice"	=>	array(
-							"name"	=>	"站内消息",
-							"key"	=>	"notice",
-							"nodes"	=>	array(
-									array("name"=>"消息群发","module"=>"MsgSystem","action"=>"index"),
-									array("name"=>"消息列表","module"=>"MsgBox","action"=>"index"),
-							),
-					),
-					"usergroup"	=>	array(
-							"name"	=>	"小组管理",
-							"key"	=>	"usergroup",
-							"nodes"	=>	array(												
-									array("name"=>"小组分类列表","module"=>"TopicGroupCate","action"=>"index"),
-									array("name"=>"小组列表","module"=>"TopicGroup","action"=>"index"),
-									array("name"=>"小组申请审核","module"=>"TopicGroup","action"=>"apply_index"),
-							),
-					),
-					"sharetag"	=>	array(
-							"name"	=>	"分享设置",
-							"key"	=>	"sharetag",
-							"nodes"	=>	array(
-									array("name"=>"分享标签分类列表","module"=>"TopicTagCate","action"=>"index"),
-									array("name"=>"分享标签列表","module"=>"TopicTag","action"=>"index"),
-//									array("name"=>"分享话题列表","module"=>"TopicTitle","action"=>"index"),
-							),
-					),
-					"msgadmin"	=>	array(
-							"name"	=>	"会员发表管理",
-							"key"	=>	"msgadmin",
-							"nodes"	=>	array(
-// 									array("name"=>"会员留言管理","module"=>"Message","action"=>"index"),
-									array("name"=>"会员分享管理","module"=>"Topic","action"=>"index"),	
-							),
-					),
-					"userinterface"	=>	array(
-							"name"	=>	"会员插件管理",
-							"key"	=>	"userinterface",
-							"nodes"	=>	array(
-									array("name"=>"会员整合插件","module"=>"Integrate","action"=>"index"),
-									array("name"=>"API插件列表","module"=>"ApiLogin","action"=>"index"),
-							),
-					),
+//					"referral"	=>	array(
+//							"name"	=>	"会员返利",
+//							"key"	=>	"referral",
+//							"nodes"	=>	array(
+//									array("name"=>"邀请返利列表","module"=>"Referrals","action"=>"index"),
+//							),
+//					),
+//					"notice"	=>	array(
+//							"name"	=>	"站内消息",
+//							"key"	=>	"notice",
+//							"nodes"	=>	array(
+//									array("name"=>"消息群发","module"=>"MsgSystem","action"=>"index"),
+//									array("name"=>"消息列表","module"=>"MsgBox","action"=>"index"),
+//							),
+//					),
+//					"usergroup"	=>	array(
+//							"name"	=>	"小组管理",
+//							"key"	=>	"usergroup",
+//							"nodes"	=>	array(												
+//									array("name"=>"小组分类列表","module"=>"TopicGroupCate","action"=>"index"),
+//									array("name"=>"小组列表","module"=>"TopicGroup","action"=>"index"),
+//									array("name"=>"小组申请审核","module"=>"TopicGroup","action"=>"apply_index"),
+//							),
+//					),
+//					"sharetag"	=>	array(
+//							"name"	=>	"分享设置",
+//							"key"	=>	"sharetag",
+//							"nodes"	=>	array(
+//									array("name"=>"分享标签分类列表","module"=>"TopicTagCate","action"=>"index"),
+//									array("name"=>"分享标签列表","module"=>"TopicTag","action"=>"index"),
+////									array("name"=>"分享话题列表","module"=>"TopicTitle","action"=>"index"),
+//							),
+//					),
+//					"msgadmin"	=>	array(
+//							"name"	=>	"会员发表管理",
+//							"key"	=>	"msgadmin",
+//							"nodes"	=>	array(
+//// 									array("name"=>"会员留言管理","module"=>"Message","action"=>"index"),
+//									array("name"=>"会员分享管理","module"=>"Topic","action"=>"index"),	
+//							),
+//					),
+//					"userinterface"	=>	array(
+//							"name"	=>	"会员插件管理",
+//							"key"	=>	"userinterface",
+//							"nodes"	=>	array(
+//									array("name"=>"会员整合插件","module"=>"Integrate","action"=>"index"),
+//									array("name"=>"API插件列表","module"=>"ApiLogin","action"=>"index"),
+//							),
+//					),
 			),
 	),	
 	"promote"	=>	array(
