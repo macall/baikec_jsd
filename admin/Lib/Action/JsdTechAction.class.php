@@ -18,6 +18,28 @@ class JsdTechAction extends CommonAction
     }
 
     public function index() {
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        foreach($region_lv2 as $k=>$v)
+        {
+            if($v['id'] == intval($_REQUEST['province_id']))
+            {
+                $region_lv2[$k]['selected'] = 1;
+                break;
+            }
+        }
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($_REQUEST['province_id']));  //三级地址
+        foreach($region_lv3 as $k=>$v)
+        {
+            if($v['id'] == intval($_REQUEST['city_id']))
+            {
+                $region_lv3[$k]['selected'] = 1;
+                break;
+            }
+        }
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
+        
         $group_list = M("ServiceType")->findAll();
         $this->assign("group_list", $group_list);
 
@@ -38,6 +60,12 @@ class JsdTechAction extends CommonAction
         if (strim($_REQUEST['mobile']) != '') {
             $map[DB_PREFIX . 'user.mobile'] = array('eq', strim($_REQUEST['mobile']));
         }
+        if (strim($_REQUEST['province_id']) != '') {
+            $map[DB_PREFIX . 'user.province_id'] = array('eq', strim($_REQUEST['province_id']));
+        }
+        if (strim($_REQUEST['city_id']) != '') {
+            $map[DB_PREFIX . 'user.city_id'] = array('eq', strim($_REQUEST['city_id']));
+        }
         if (strim($_REQUEST['pid_name']) != '') {
             $pid = M("User")->where("user_name='" . strim($_REQUEST['pid_name']) . "'")->getField("id");
             $map[DB_PREFIX . 'user.pid'] = $pid;
@@ -57,7 +85,13 @@ class JsdTechAction extends CommonAction
     {
         $service_level_list = M("ServiceLevel")->findAll();
         $this->assign("service_level_list", $service_level_list);
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($_REQUEST['province_id']));  //三级地址
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
         
+        //经理列表
         $manager_condition = array(
             'is_effect'=>1,
             'is_delete'=>0,
@@ -68,6 +102,38 @@ class JsdTechAction extends CommonAction
         $this->assign("manager_list", $manager_list);
         
         $this->display();
+    }
+    
+    public function get_manager_list()
+    {
+            $province_id = intval($_REQUEST['province_id']);
+            $city_id = intval($_REQUEST['city_id']);
+            
+            $manager_condition = array(
+                'is_effect'=>1,
+                'is_delete'=>0,
+                'service_type_id'=>3,
+                'province_id'=>$province_id,
+                'city_id'=>$city_id
+            );
+            
+            $manager_list = M("User")->where($manager_condition)->findAll();
+//
+//            $ajax = intval($_REQUEST['ajax']);
+//            $info = M(MODULE_NAME)->where("id=".$id)->getField("name");
+//            $c_is_effect = M(MODULE_NAME)->where("id=".$id)->getField("is_effect");  //当前状态
+//            $n_is_effect = $c_is_effect == 0 ? 1 : 0; //需设置的状态
+//            M(MODULE_NAME)->where("id=".$id)->setField("is_effect",$n_is_effect);	
+//            M(MODULE_NAME)->where("id=".$id)->setField("update_time",NOW_TIME);	
+//            save_log($info.l("SET_EFFECT_".$n_is_effect),1);
+//
+//            $locations = M("DealLocationLink")->where(array ('deal_id' => $id ))->findAll();
+//                                    foreach($locations as $location)
+//                                    {
+//                                            recount_supplier_data_count($location['location_id'],"daijin");
+//                                            recount_supplier_data_count($location['location_id'],"tuan");
+//                                    }
+            $this->ajaxReturn($manager_list)	;	
     }
     
     public function insert() 
@@ -148,11 +214,58 @@ class JsdTechAction extends CommonAction
         $this->assign('vo', $vo);
         
         $manager_condition = array(
-            'is_effect'=>1,
+            'id'=> $vo['p_id'],
             'is_delete'=>0,
             'service_type_id'=>3
         );
-        $manager_list = M("User")->where($manager_condition)->findAll();
+        $manager = M("User")->where($manager_condition)->find();
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($vo['province_id']));  //三级地址
+        $mana_region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($manager['province_id']));  //三级地址
+        foreach($region_lv2 as $k=>$v)
+        {
+            //自己的省份
+            if($v['id'] == intval($vo['province_id']))
+            {
+                $region_lv2[$k]['selected'] = 1;
+            }
+            //经理的省份
+            if($v['id'] == intval($manager['province_id']))
+            {
+                $region_lv2[$k]['mana_selected'] = 1;
+            }
+        }
+        foreach($region_lv3 as $k=>$v)
+        {
+            //自己的城市
+            if($v['id'] == intval($vo['city_id']))
+            {
+                $region_lv3[$k]['selected'] = 1;
+            }
+        }
+        foreach($mana_region_lv3 as $k=>$v)
+        {
+            //经理的城市
+            if($v['id'] == intval($manager['city_id']))
+            {
+                $mana_region_lv3[$k]['mana_selected'] = 1;
+            }
+        }
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
+        $this->assign("mana_region_lv3", $mana_region_lv3);
+        
+        //经理列表
+        $manager_list_condition = array(
+            'is_effect'=>1,
+            'is_delete'=>0,
+            'service_type_id'=>3,
+            'province_id'=>$manager['province_id'],
+            'city_id'=>$manager['city_id']
+            
+        );
+        $manager_list = M("User")->where($manager_list_condition)->findAll();
         foreach ($manager_list as $key => $value) {
             if($value['id'] == $vo['p_id']){
                 $manager_list[$key]['selected'] = 1;
@@ -160,6 +273,7 @@ class JsdTechAction extends CommonAction
         }
         $this->assign('manager_list', $manager_list);
         
+        //星级列表
         $service_level_list = M("ServiceLevel")->findAll();
         foreach ($service_level_list as $key => $value) {
             if($value['id'] == $vo['service_level_id']){
@@ -168,6 +282,15 @@ class JsdTechAction extends CommonAction
         }
         $this->assign('service_level_list', $service_level_list);
         
+        //用户类型列表
+        $service_type_list = M("ServiceType")->findAll();
+        foreach ($service_type_list as $key => $value) {
+            if($value['id'] == $vo['service_type_id']){
+                $service_type_list[$key]['selected'] = 1;
+            }
+        }
+        $this->assign('service_type_list', $service_type_list);
+        
         $this->display();
     }
     public function update() 
@@ -175,10 +298,16 @@ class JsdTechAction extends CommonAction
         $data = M('User')->create();
         $log_info = M('User')->where("id=" . intval($data['id']))->getField("user_name");
         //开始验证有效性
-        $this->assign("jumpUrl", u(MODULE_NAME . "/edit", array("id" => $data['id'])));
+//        $this->assign("jumpUrl", u(MODULE_NAME . "/edit", array("id" => $data['id'])));
+        $this->assign("jumpUrl", u(MODULE_NAME . "/index"));
         if (!check_empty($data['user_pwd']) && $data['user_pwd'] != $_REQUEST['user_confirm_pwd']) {
             $this->error(L("USER_PWD_CONFIRM_ERROR"));
         }
+        if($_REQUEST['changed_service_type_id'] != $_REQUEST['service_type_id']){
+            $_REQUEST['service_type_id'] = $_REQUEST['changed_service_type_id'];//修改service_type_id
+            $_REQUEST['belong_to_manager_id'] = 'set_null';//修改p_id
+        }
+        
         $res = save_user($_REQUEST, 'UPDATE');
         if ($res['status'] == 0) {
             $error_field = $res['data'];

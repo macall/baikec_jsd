@@ -3,6 +3,8 @@
 <include file="Public:header" />
 <load href='__TMPL__Common/js/user_edit.js' />
 <load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="{$APP_ROOT}/system/region.js"></script>
+
 <div class="main">
 <div class="main_title">{%EDIT} <a href="{:u("JsdTech/index")}" class="back_list">{%BACK_LIST}</a></div>
 <div class="blank5"></div>
@@ -17,31 +19,40 @@
 		<td colspan=2 class="topTd"></td>
 	</tr>
 	<tr>
-		<td class="item_title">{%USER_NAME}:</td>
+		<td class="item_title">技师名称:</td>
 		<td class="item_input"><input type="hidden" class="textbox require" name="user_name" value="{$vo.user_name}" />{$vo.user_name}</td>
 	</tr>
 	<tr>
-		<td class="item_title">{%USER_EMAIL}:</td>
+		<td class="item_title">技师邮箱:</td>
 		<td class="item_input">
 			<input type="<if condition="$vo['email'] eq ''">text<else />hidden</if>" class="textbox require" name="email" value="{$vo.email}" />
 			{$vo.email}
 		</td>
 	</tr>
 	<tr>
-		<td class="item_title">{%USER_MOBILE}:</td>
+		<td class="item_title">技师手机:</td>
 		<td class="item_input"><input type="text" class="textbox <PHP>if(intval(app_conf("MOBILE_MUST"))==1) echo 'require';</PHP>" name="mobile" value="{$vo.mobile}" /></td>
 	</tr>
-	<tr>
-		<td class="item_title">{%USER_PASSWORD}:</td>
-		<td class="item_input"><input type="password" class="textbox" name="user_pwd" /></td>
-	</tr>
-	<tr>
-		<td class="item_title">{%USER_CONFIRM_PASSWORD}:</td>
-		<td class="item_input"><input type="password" class="textbox" name="user_confirm_pwd" /></td>
-	</tr>
+        <tr>
+            <td class="item_title">城市:</td>
+            <td class="item_input">
+                <select name="province_id">
+                    <option value="0">所在省份</option>
+                    <foreach name="region_lv2" item="region_item">
+                        <option value="{$region_item.id}" <if condition="$region_item.selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                    </foreach>
+                </select>
+                <select name="city_id">
+                    <option value="0">所在城市</option>		
+                    <foreach name="region_lv3" item="region_item">
+                        <option value="{$region_item.id}" <if condition="$region_item.selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                    </foreach>
+                </select>
+            </td>
+        </tr>
         <!--会员星级:-->
         <tr>
-            <td class="item_title">{%USER_IS_MERCHANT}:</td>
+            <td class="item_title">技师星级:</td>
             <td class="item_input">
                 <select name="service_level_id">
                     <option value="0">选择星级</option>
@@ -54,6 +65,18 @@
         <tr  id="manager_list">
             <td class="item_title">所属经理:</td>
             <td class="item_input">
+                <select name="manager_province_id">
+                    <option value="0">所在省份</option>
+                    <foreach name="region_lv2" item="region_item">
+                        <option value="{$region_item.id}"<if condition="$region_item.mana_selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                    </foreach>
+                </select>
+                <select name="manager_city_id">
+                    <option value="0">所在城市</option>		
+                    <foreach name="mana_region_lv3" item="region_item">
+                        <option value="{$region_item.id}"<if condition="$region_item.mana_selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                    </foreach>
+                </select>
                 <select name="belong_to_manager_id">
                     <option value="0">选择经理</option>
                     <foreach name="manager_list" item="manager_item">
@@ -62,6 +85,28 @@
                 </select>
             </td>
         </tr>
+<!--        <tr  id="manager_list">
+            <td class="item_title">所属经理:</td>
+            <td class="item_input">
+                <select name="belong_to_manager_id">
+                    <option value="0">选择经理</option>
+                    <foreach name="manager_list" item="manager_item">
+                        <option value="{$manager_item.id}" <if condition="$manager_item.selected eq 1">selected</if>>{$manager_item.user_name}</option>
+                    </foreach>
+                </select>
+            </td>
+        </tr>-->
+	<tr>
+		<td class="item_title">类型:</td>
+		<td class="item_input">
+                    <select name="changed_service_type_id">
+                        <option value="0">选择类型</option>
+                        <foreach name="service_type_list" item="service_type_item">
+                            <option value="{$service_type_item.id}" <if condition="$service_type_item.selected eq 1">selected</if>>{$service_type_item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
+	</tr>
 	<tr>
 		<td class="item_title">{%USER_BIRTHDAY}:</td>
 		<td class="item_input">
@@ -70,7 +115,15 @@
 			<input type="text" name="bday" class="textbox" value="{$vo.bday}"  style="width:20px" maxlength="2" />{%USER_BDAY}
 		</td>
 	</tr>
-	
+        
+	<tr>
+		<td class="item_title">确认密码:</td>
+		<td class="item_input"><input type="password" class="textbox" name="user_pwd" /></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%USER_CONFIRM_PASSWORD}:</td>
+		<td class="item_input"><input type="password" class="textbox" name="user_confirm_pwd" /></td>
+	</tr>
 	<tr>
 		<td class="item_title">{%IS_EFFECT}:</td>
 		<td class="item_input">
@@ -156,3 +209,68 @@
 </form>
 </div>
 <include file="Public:footer" />
+<script>
+    $(document).ready(function(){
+        $("select[name='manager_province_id']").bind("change",function(){
+            load_manager_city();
+        });
+        $("select[name='manager_city_id']").bind("change",function(){
+            var query = new Object();
+            query.province_id = $("select[name='manager_province_id']").val();
+            query.city_id = $("select[name='manager_city_id']").val();
+            $.ajax({ 
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=get_manager_list", 
+                    data: query,
+                    dataType: "json",
+                    success: function(obj){
+                        var html = '<option value="0">选择经理</option>';
+                        $.each(obj.data,function(i,item){
+                            html += '<option value="'+item.id+'">'+item.user_name+'</option>'                    
+                        });
+                        
+                        $("select[name='belong_to_manager_id']").html(html);
+                    }
+            });
+        });
+        //切换地区
+        $("select[name='province_id']").bind("change",function(){
+            load_city();
+        });
+    });
+    //载入城市
+    function load_manager_city()
+    {
+        var id = $("select[name='manager_province_id']").val();
+        var evalStr="regionConf.r"+id+".c";
+        if(id==0){
+            var html = "<option value='0'>所在城市</option>";
+        }else{
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>所在城市</option>";
+            for(var key in regionConfs){
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='manager_city_id']").html(html);
+        $("select[name='manager_city_id']").ui_select({refresh:true});
+    }
+    //载入城市
+    function load_city()
+    {
+        var id = $("select[name='province_id']").val();
+        var evalStr="regionConf.r"+id+".c";
+        if(id==0){
+            var html = "<option value='0'>所在城市</option>";
+        }else{
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>所在城市</option>";
+            for(var key in regionConfs){
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='city_id']").html(html);
+        $("select[name='city_id']").ui_select({refresh:true});
+    }
+</script>

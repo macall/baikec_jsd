@@ -3,6 +3,7 @@
 <include file="Public:header" />
 <load href='__TMPL__Common/js/user_edit.js' />
 <load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="{$APP_ROOT}/system/region.js"></script>
 <div class="main">
     <div class="main_title">{%ADD} <a href="{:u("JsdUser/index")}" class="back_list">{%BACK_LIST}</a></div>
     <div class="blank5"></div>
@@ -17,24 +18,46 @@
                 <td colspan=2 class="topTd"></td>
             </tr>
             <tr>
-                <td class="item_title">{%USER_NAME}:</td>
+                <td class="item_title">会员名称:</td>
                 <td class="item_input"><input type="text" class="textbox require" name="user_name" /></td>
             </tr>
             <tr>
-                <td class="item_title">{%USER_EMAIL}:</td>
+                <td class="item_title">会员邮箱:</td>
                 <td class="item_input"><input type="text" class="textbox require" name="email" /></td>
             </tr>
             <tr>
-                <td class="item_title">{%USER_MOBILE}:</td>
+                <td class="item_title">会员手机:</td>
                 <td class="item_input"><input type="text" class="textbox <PHP>if(intval(app_conf("MOBILE_MUST"))==1) echo 'require';</PHP>" name="mobile" /></td>
             </tr>
+            
             <tr>
-                <td class="item_title">{%USER_PASSWORD}:</td>
-                <td class="item_input"><input type="password" class="textbox require" name="user_pwd" /></td>
+                <td class="item_title">城市:</td>
+                <td class="item_input">
+                    <select name="province_id">
+                        <option value="0">所在省份</option>
+                        <foreach name="region_lv2" item="region_item">
+                            <option value="{$region_item.id}" <if condition="$region_item.selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                        </foreach>
+                    </select>
+                    <select name="city_id">
+                        <option value="0">所在城市</option>		
+                        <foreach name="region_lv3" item="region_item">
+                            <option value="{$region_item.id}" <if condition="$region_item.selected eq 1">selected="selected"</if>>{$region_item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
             </tr>
+            <!--会员星级:-->
             <tr>
-                <td class="item_title">{%USER_CONFIRM_PASSWORD}:</td>
-                <td class="item_input"><input type="password" class="textbox require" name="user_confirm_pwd" /></td>
+                <td class="item_title">会员星级:</td>
+                <td class="item_input">
+                    <select name="service_level_id">
+                        <option value="0">选择星级</option>
+                        <foreach name="service_level_list" item="service_level_item">
+                            <option value="{$service_level_item.id}">{$service_level_item.levelname}</option>
+                        </foreach>
+                    </select>
+                </td>
             </tr>
             <!--出生日期-->
             <tr>
@@ -45,7 +68,14 @@
                     <input type="text" name="bday" class="textbox" value=""  style="width:20px" maxlength="2" />{%USER_BDAY}
                 </td>
             </tr>
-
+            <tr>
+                <td class="item_title">设置密码:</td>
+                <td class="item_input"><input type="password" class="textbox require" name="user_pwd" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">{%USER_CONFIRM_PASSWORD}:</td>
+                <td class="item_input"><input type="password" class="textbox require" name="user_confirm_pwd" /></td>
+            </tr>
             <tr>
                 <td class="item_title">{%IS_EFFECT}:</td>
                 <td class="item_input">
@@ -108,3 +138,31 @@
     </form>
 </div>
 <include file="Public:footer" />
+<script>
+    $(document).ready(function(){
+        
+        //切换地区
+        $("select[name='province_id']").bind("change",function(){
+            load_city();
+        });
+    });
+    
+    //载入城市
+    function load_city()
+    {
+        var id = $("select[name='province_id']").val();
+        var evalStr="regionConf.r"+id+".c";
+        if(id==0){
+            var html = "<option value='0'>所在城市</option>";
+        }else{
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>所在城市</option>";
+            for(var key in regionConfs){
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='city_id']").html(html);
+        $("select[name='city_id']").ui_select({refresh:true});
+    }
+</script>

@@ -136,7 +136,7 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 	 * 不会更新保存的字段为：score,money,verify,pid
 	 */
 	function save_user($user_data,$mode='INSERT')
-	{		
+	{            
 		//开始数据验证
 		$res = array('status'=>1,'info'=>'','data'=>''); //用于返回的数据
 		if(trim($user_data['user_name'])=='')
@@ -208,10 +208,17 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 
 		
 		//验证结束开始插入数据
-                if(isset($user_data['service_level_id']) && $user_data['service_level_id'] != 0)
+                if(isset($user_data['service_level_id']) && $user_data['service_level_id'] != NULL)
                 $user['service_level_id'] = $user_data['service_level_id'];
-                if(isset($user_data['belong_to_manager_id']) && $user_data['belong_to_manager_id'] != 0)
-                $user['p_id'] = $user_data['belong_to_manager_id'];
+                
+                if(isset($user_data['belong_to_manager_id']) && $user_data['belong_to_manager_id'] != NULL){
+                    $user['p_id'] = $user_data['belong_to_manager_id'];
+                    
+                    if($user_data['belong_to_manager_id'] == 'set_null'){
+                        $user['p_id'] = NULL;
+                    }
+                }
+                
                 $user['service_type_id'] = $user_data['service_type_id'];
 		$user['user_name'] = $user_data['user_name'];
 		$user['create_time'] = NOW_TIME;

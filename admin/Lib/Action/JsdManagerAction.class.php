@@ -19,6 +19,28 @@ class JsdManagerAction extends CommonAction
 
     public function index()
     {
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        foreach($region_lv2 as $k=>$v)
+        {
+            if($v['id'] == intval($_REQUEST['province_id']))
+            {
+                $region_lv2[$k]['selected'] = 1;
+                break;
+            }
+        }
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($_REQUEST['province_id']));  //三级地址
+        foreach($region_lv3 as $k=>$v)
+        {
+            if($v['id'] == intval($_REQUEST['city_id']))
+            {
+                $region_lv3[$k]['selected'] = 1;
+                break;
+            }
+        }
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
+        
         $group_list = M("ServiceType")->findAll();
         $this->assign("group_list", $group_list);
 
@@ -39,6 +61,12 @@ class JsdManagerAction extends CommonAction
         if (strim($_REQUEST['mobile']) != '') {
             $map[DB_PREFIX . 'user.mobile'] = array('eq', strim($_REQUEST['mobile']));
         }
+        if (strim($_REQUEST['province_id']) != '') {
+            $map[DB_PREFIX . 'user.province_id'] = array('eq', strim($_REQUEST['province_id']));
+        }
+        if (strim($_REQUEST['city_id']) != '') {
+            $map[DB_PREFIX . 'user.city_id'] = array('eq', strim($_REQUEST['city_id']));
+        }
         if (strim($_REQUEST['pid_name']) != '') {
             $pid = M("User")->where("user_name='" . strim($_REQUEST['pid_name']) . "'")->getField("id");
             $map[DB_PREFIX . 'user.pid'] = $pid;
@@ -56,6 +84,15 @@ class JsdManagerAction extends CommonAction
 
     public function add() 
     {
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($_REQUEST['province_id']));  //三级地址
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
+        
+        $service_level_list = M("ServiceLevel")->findAll();
+        $this->assign("service_level_list", $service_level_list);
+        
         $this->display();
     }
     
@@ -136,21 +173,60 @@ class JsdManagerAction extends CommonAction
         $vo = M('User')->where($condition)->find();
         $this->assign('vo', $vo);
 
-        $group_list = M("UserGroup")->findAll();
-        $this->assign("group_list", $group_list);
-
-        $cate_list = M("TopicTagCate")->findAll();
-        foreach ($cate_list as $k => $v) {
-            $cate_list[$k]['checked'] = M("UserCateLink")->where("user_id=" . $vo['id'] . " and cate_id = " . $v['id'])->count();
+        //地区列表
+        $region_lv2 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where region_level = 2");  //二级地址
+        foreach($region_lv2 as $k=>$v)
+        {
+            if($v['id'] == intval($vo['province_id']))
+            {
+                $region_lv2[$k]['selected'] = 1;
+                break;
+            }
         }
-        $this->assign("cate_list", $cate_list);
-        $field_list = M("UserField")->order("sort desc")->findAll();
-        foreach ($field_list as $k => $v) {
-            $field_list[$k]['value_scope'] = preg_split("/[ ,]/i", $v['value_scope']);
-            $field_list[$k]['value'] = M("UserExtend")->where("user_id=" . $id . " and field_id=" . $v['id'])->getField("value");
+        $region_lv3 = $GLOBALS['db']->getAll("select * from ".DB_PREFIX."region_conf where pid = ".intval($vo['province_id']));  //三级地址
+        foreach($region_lv3 as $k=>$v)
+        {
+            if($v['id'] == intval($vo['city_id']))
+            {
+                $region_lv3[$k]['selected'] = 1;
+                break;
+            }
         }
-        $this->assign("field_list", $field_list);
+        $this->assign("region_lv2", $region_lv2);
+        $this->assign("region_lv3", $region_lv3);
+        
+//        $group_list = M("UserGroup")->findAll();
+//        $this->assign("group_list", $group_list);
+//
+//        $cate_list = M("TopicTagCate")->findAll();
+//        foreach ($cate_list as $k => $v) {
+//            $cate_list[$k]['checked'] = M("UserCateLink")->where("user_id=" . $vo['id'] . " and cate_id = " . $v['id'])->count();
+//        }
+//        $this->assign("cate_list", $cate_list);
+//        $field_list = M("UserField")->order("sort desc")->findAll();
+//        foreach ($field_list as $k => $v) {
+//            $field_list[$k]['value_scope'] = preg_split("/[ ,]/i", $v['value_scope']);
+//            $field_list[$k]['value'] = M("UserExtend")->where("user_id=" . $id . " and field_id=" . $v['id'])->getField("value");
+//        }
+//        $this->assign("field_list", $field_list);
 
+        $service_level_list = M("ServiceLevel")->findAll();
+        foreach ($service_level_list as $key => $value) {
+            if($value['id'] == $vo['service_level_id']){
+                $service_level_list[$key]['selected'] = 1;
+            }
+        }
+        $this->assign('service_level_list', $service_level_list);
+        
+        $this->assign('service_level_list', $service_level_list);
+        $service_type_list = M("ServiceType")->findAll();
+        foreach ($service_type_list as $key => $value) {
+            if($value['id'] == $vo['service_type_id']){
+                $service_type_list[$key]['selected'] = 1;
+            }
+        }
+        $this->assign('service_type_list', $service_type_list);
+        
         $rs = M("UserAuth")->where("user_id=" . $id . " and rel_id = 0")->findAll();
         foreach ($rs as $row) {
             $auth_list[$row['m_name']][$row['a_name']] = 1;
@@ -164,7 +240,8 @@ class JsdManagerAction extends CommonAction
 
         $log_info = M('User')->where("id=" . intval($data['id']))->getField("user_name");
         //开始验证有效性
-        $this->assign("jumpUrl", u(MODULE_NAME . "/edit", array("id" => $data['id'])));
+//        $this->assign("jumpUrl", u(MODULE_NAME . "/edit", array("id" => $data['id'])));
+        $this->assign("jumpUrl", u(MODULE_NAME . "/index"));
         if (!check_empty($data['user_pwd']) && $data['user_pwd'] != $_REQUEST['user_confirm_pwd']) {
             $this->error(L("USER_PWD_CONFIRM_ERROR"));
         }
