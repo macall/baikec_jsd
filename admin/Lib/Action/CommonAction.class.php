@@ -102,7 +102,8 @@ class CommonAction extends AuthAction{
 			$p = new Page ( $count, $listRows );
 			//分页查询数据
                         if((isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'finished_order_count')
-                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'unfinished_order_count') ){
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'unfinished_order_count')
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'tech_count')){
                             $order = ! empty ( $sortBy ) ? $sortBy : $model->getPk ();
                         }
 			$voList = $model->where($map)->order( "`" . $order . "` " . $sort)->limit($p->firstRow . ',' . $p->listRows)->findAll ( );
@@ -194,6 +195,60 @@ class CommonAction extends AuthAction{
                                 }
 
                                 array_multisort($unfinished_order_sort_list, SORT_DESC, $voList);
+                            }
+                        }
+                        
+                        //如果是技师列表
+                        if($map[DB_PREFIX . 'user.service_type_id'] == 3){
+                            foreach ($voList as $key=>$value) {
+                                //拼接地址
+                                $province = M('RegionConf')->where(array('id'=>$value['province_id']))->find();
+                                $city = M('RegionConf')->where(array('id'=>$value['city_id']))->find();
+                                $addr = $province['name'].' '.$city['name'].' '.$value['addr_detail'];
+                                $value['province_id'] = $addr;
+                                
+                                //性别
+                                if($value['sex'] == 1){
+                                    $value['sex'] = '男';
+                                }elseif($value['sex'] == 0){
+                                    $value['sex'] = '女';
+                                }else{
+                                    $value['sex'] = '保密';
+                                }
+                                
+                                
+                                $level = M('ServiceLevel')->where(array('id'=>$value['service_level_id']))->find();
+                                $value['service_level_id'] = $level['levelname'];
+                                
+                                $tech_count = M('User')->where ( array('p_id'=>$value['id']) )->count ( 'id' );
+                                $value['tech_count'] = $tech_count;
+                                
+                                $voList[$key] = $value;
+                            }
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'tech_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 1){
+                                
+                                $tech_count_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $tech_count_sort_list[] = $value['tech_count'];
+                                }
+
+                                array_multisort($tech_count_sort_list, SORT_ASC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'tech_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 0){
+                                
+                                $tech_count_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $tech_count_sort_list[] = $value['tech_count'];
+                                }
+
+                                array_multisort($tech_count_sort_list, SORT_DESC, $voList);
                             }
                         }
 			
