@@ -31,7 +31,7 @@
             </tr>
             
             <tr>
-                <td class="item_title">城市:</td>
+                <td class="item_title">详细地址:</td>
                 <td class="item_input">
                     <select name="province_id">
                         <option value="0">所在省份</option>
@@ -45,6 +45,7 @@
                             <option value="{$region_item.id}" <if condition="$region_item.selected eq 1">selected="selected"</if>>{$region_item.name}</option>
                         </foreach>
                     </select>
+                    <input type="text" class="textbox require" name="addr_detail" />
                 </td>
             </tr>
             <!--会员星级:-->
@@ -67,6 +68,14 @@
                     <input type="text" name="bmonth" class="textbox" value="" style="width:20px" maxlength="2"/>{%USER_BMONTH}
                     <input type="text" name="bday" class="textbox" value=""  style="width:20px" maxlength="2" />{%USER_BDAY}
                 </td>
+            </tr>
+            <!--性别-->
+            <tr>
+		<td class="item_title">性别:</td>
+		<td class="item_input">
+			<lable>男<input type="radio" name="sex" value="1" checked="checked" /></lable>
+			<lable>女<input type="radio" name="sex" value="0" /></lable>
+		</td>
             </tr>
             <tr>
                 <td class="item_title">设置密码:</td>

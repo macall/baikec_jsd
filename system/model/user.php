@@ -228,6 +228,12 @@ define("LOGIN_STATUS_TEMP",2); //临时登录
 		$user['province_id'] = intval($user_data['province_id']);
 		if(isset($user_data['city_id']))
 		$user['city_id'] = intval($user_data['city_id']);
+                if(isset($user_data['addr_detail']))
+		$user['addr_detail'] = $user_data['addr_detail'];
+                if(isset($user_data['technician_certif']))
+		$user['technician_certif'] = $user_data['technician_certif'];
+                if(isset($user_data['manage_area']))
+		$user['manage_area'] = $user_data['manage_area'];
 		if(isset($user_data['sex']))
 		$user['sex'] = intval($user_data['sex']);
 		$user['my_intro'] = strim($user_data['my_intro']);
