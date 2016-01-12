@@ -101,8 +101,101 @@ class CommonAction extends AuthAction{
 			}
 			$p = new Page ( $count, $listRows );
 			//分页查询数据
-
+                        if((isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'finished_order_count')
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'unfinished_order_count') ){
+                            $order = ! empty ( $sortBy ) ? $sortBy : $model->getPk ();
+                        }
 			$voList = $model->where($map)->order( "`" . $order . "` " . $sort)->limit($p->firstRow . ',' . $p->listRows)->findAll ( );
+                        //如果是技师列表
+                        if($map[DB_PREFIX . 'user.service_type_id'] == 2){
+                            foreach ($voList as $key=>$value) {
+                                //拼接地址
+                                $province = M('RegionConf')->where(array('id'=>$value['province_id']))->find();
+                                $city = M('RegionConf')->where(array('id'=>$value['city_id']))->find();
+                                $addr = $province['name'].' '.$city['name'].' '.$value['addr_detail'];
+                                $value['province_id'] = $addr;
+                                
+                                //性别
+                                if($value['sex'] == 1){
+                                    $value['sex'] = '男';
+                                }elseif($value['sex'] == 0){
+                                    $value['sex'] = '女';
+                                }else{
+                                    $value['sex'] = '保密';
+                                }
+                                
+                                
+                                $level = M('ServiceLevel')->where(array('id'=>$value['service_level_id']))->find();
+                                $value['service_level_id'] = $level['levelname'];
+                                
+                                
+                                //已完成
+                                $finished[DB_PREFIX . 'deal_order.technician_id'] = $value['id'];
+                                $finished[DB_PREFIX . 'deal_order.order_status'] = 1;
+                                $finished_order_count = M('DealOrder')->where ( $finished )->count ( 'id' );
+                                //未完成
+                                $unfinished[DB_PREFIX . 'deal_order.technician_id'] = $value['id'];
+                                $unfinished[DB_PREFIX . 'deal_order.order_status'] = 0;
+                                $unfinished_order_count = M('DealOrder')->where ( $unfinished )->count ( 'id' );
+                                
+                                $value['finished_order_count'] = $finished_order_count;
+                                $value['unfinished_order_count'] = $unfinished_order_count;
+                                
+                                
+                                $voList[$key] = $value;
+                            }
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'finished_order_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 1){
+                                
+                                $finished_order_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $finished_order_sort_list[] = $value['finished_order_count'];
+                                }
+
+                                array_multisort($finished_order_sort_list, SORT_ASC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'finished_order_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 0){
+                                
+                                $finished_order_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $finished_order_sort_list[] = $value['finished_order_count'];
+                                }
+
+                                array_multisort($finished_order_sort_list, SORT_DESC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'unfinished_order_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 1){
+                                
+                                $unfinished_order_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $unfinished_order_sort_list[] = $value['unfinished_order_count'];
+                                }
+
+                                array_multisort($unfinished_order_sort_list, SORT_ASC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'unfinished_order_count' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 0){
+                                
+                                $unfinished_order_sort_list = array();
+                                foreach ($voList as $value) {
+                                    $unfinished_order_sort_list[] = $value['unfinished_order_count'];
+                                }
+
+                                array_multisort($unfinished_order_sort_list, SORT_DESC, $voList);
+                            }
+                        }
 			
 //			echo $model->getlastsql();
 			//分页跳转的时候保证查询条件
