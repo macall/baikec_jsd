@@ -103,10 +103,101 @@ class CommonAction extends AuthAction{
 			//分页查询数据
                         if((isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'finished_order_count')
                             || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'unfinished_order_count')
-                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'tech_count')){
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'tech_count')
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'cost_amount')
+                            || (isset ( $_REQUEST ['_order'] ) && $_REQUEST ['_order'] == 'comp_amount')){
                             $order = ! empty ( $sortBy ) ? $sortBy : $model->getPk ();
                         }
 			$voList = $model->where($map)->order( "`" . $order . "` " . $sort)->limit($p->firstRow . ',' . $p->listRows)->findAll ( );
+                        
+                         //如果是会员列表
+                        if($map[DB_PREFIX . 'user.service_type_id'] == 1){
+                            foreach ($voList as $key=>$value) {
+                                //拼接地址
+                                $province = M('RegionConf')->where(array('id'=>$value['province_id']))->find();
+                                $city = M('RegionConf')->where(array('id'=>$value['city_id']))->find();
+                                $addr = $province['name'].' '.$city['name'].' '.$value['addr_detail'];
+                                $value['province_id'] = $addr;
+                                
+                                //性别
+                                if($value['sex'] == 1){
+                                    $value['sex'] = '男';
+                                }elseif($value['sex'] == 0){
+                                    $value['sex'] = '女';
+                                }else{
+                                    $value['sex'] = '保密';
+                                }
+                                
+                                //星级
+                                $level = M('ServiceLevel')->where(array('id'=>$value['service_level_id']))->find();
+                                $value['service_level_id'] = $level['levelname'];
+                                
+                                //已完成订单总消费
+                                $finished[DB_PREFIX . 'deal_order.user_id'] = $value['id'];
+                                $finished[DB_PREFIX . 'deal_order.order_status'] = 1;
+                                $finished[DB_PREFIX . 'deal_order.extra_status'] = 0;
+                                $finished[DB_PREFIX . 'deal_order.after_sale'] = 0;
+                                $cost_amount = M('DealOrder')->where ( $finished )->sum('pay_amount');
+                                $value['cost_amount'] = $cost_amount;
+                                
+                                $comp_amount = M('Complain')->where ( array('user_id'=>$value['id']) )->count('complain_id');
+                                $value['comp_amount'] = $comp_amount;
+                                
+                                $voList[$key] = $value;
+                            }
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'cost_amount' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 1){
+                                
+                                $cost_amount_list = array();
+                                foreach ($voList as $value) {
+                                    $cost_amount_list[] = $value['cost_amount'];
+                                }
+
+                                array_multisort($cost_amount_list, SORT_ASC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'cost_amount' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 0){
+                                
+                                $cost_amount_list = array();
+                                foreach ($voList as $value) {
+                                    $cost_amount_list[] = $value['cost_amount'];
+                                }
+
+                                array_multisort($cost_amount_list, SORT_DESC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'comp_amount' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 1){
+                                
+                                $comp_amount_list = array();
+                                foreach ($voList as $value) {
+                                    $comp_amount_list[] = $value['comp_amount'];
+                                }
+
+                                array_multisort($comp_amount_list, SORT_ASC, $voList);
+                            }
+                            
+                            if(isset ( $_REQUEST ['_order'] ) 
+                                    && $_REQUEST ['_order'] == 'comp_amount' 
+                                    && isset ( $_REQUEST ['_sort'] )
+                                    && $_REQUEST ['_sort'] == 0){
+                                
+                                $comp_amount_list = array();
+                                foreach ($voList as $value) {
+                                    $comp_amount_list[] = $value['comp_amount'];
+                                }
+
+                                array_multisort($comp_amount_list, SORT_DESC, $voList);
+                            }
+                        }
+                        
                         //如果是技师列表
                         if($map[DB_PREFIX . 'user.service_type_id'] == 2){
                             foreach ($voList as $key=>$value) {
@@ -198,7 +289,7 @@ class CommonAction extends AuthAction{
                             }
                         }
                         
-                        //如果是技师列表
+                        //如果是经理列表
                         if($map[DB_PREFIX . 'user.service_type_id'] == 3){
                             foreach ($voList as $key=>$value) {
                                 //拼接地址

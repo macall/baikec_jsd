@@ -116,34 +116,34 @@ return array(
 							"name"	=>	"订单管理",
 							"key"	=>	"order",
 							"nodes"	=>	array(
-									array("name"=>"订单列表","module"=>"DealOrder","action"=>"deal_index"),
-									array("name"=>"历史订单","module"=>"DealOrder","action"=>"deal_trash"),
-									array("name"=>"充值订单列表","module"=>"DealOrder","action"=>"incharge_index"),
-									array("name"=>"历史充值订单","module"=>"DealOrder","action"=>"incharge_trash"),
-									array("name"=>"收款单列表","module"=>"PaymentNotice","action"=>"index"),
-									array("name"=>"抽奖号列表","module"=>"DealOrder","action"=>"lottery_index"),
-									array("name"=>"订单来路统计","module"=>"DealOrder","action"=>"referer"),
+									array("name"=>"订单列表","module"=>"JsdOrder","action"=>"deal_index"),
+//									array("name"=>"历史订单","module"=>"DealOrder","action"=>"deal_trash"),
+//									array("name"=>"充值订单列表","module"=>"DealOrder","action"=>"incharge_index"),
+//									array("name"=>"历史充值订单","module"=>"DealOrder","action"=>"incharge_trash"),
+//									array("name"=>"收款单列表","module"=>"PaymentNotice","action"=>"index"),
+//									array("name"=>"抽奖号列表","module"=>"DealOrder","action"=>"lottery_index"),
+//									array("name"=>"订单来路统计","module"=>"DealOrder","action"=>"referer"),
 							),
 					),					
-					"orderinterface"	=>	array(
-							"name"	=>	"订单业务接口",
-							"key"	=>	"orderinterface",
-							"nodes"	=>	array(
-									array("name"=>"支付接口列表","module"=>"Payment","action"=>"index"),
-									array("name"=>"促销接口列表","module"=>"Promote","action"=>"index"),
-									array("name"=>"快递接口列表","module"=>"Express","action"=>"index"),
-									array("name"=>"代金券类型列表","module"=>"EcvType","action"=>"index"),
-							),
-					),
-					"delivery"	=>	array(
-							"name"	=>	"配送方式",
-							"key"	=>	"delivery",
-							"nodes"	=>	array(
-									array("name"=>"重量列表","module"=>"WeightUnit","action"=>"index"),
-									array("name"=>"配送方式列表","module"=>"Delivery","action"=>"index"),
-									array("name"=>"配送地区列表","module"=>"DeliveryRegion","action"=>"index"),									
-							),
-					),
+//					"orderinterface"	=>	array(
+//							"name"	=>	"订单业务接口",
+//							"key"	=>	"orderinterface",
+//							"nodes"	=>	array(
+//									array("name"=>"支付接口列表","module"=>"Payment","action"=>"index"),
+//									array("name"=>"促销接口列表","module"=>"Promote","action"=>"index"),
+//									array("name"=>"快递接口列表","module"=>"Express","action"=>"index"),
+//									array("name"=>"代金券类型列表","module"=>"EcvType","action"=>"index"),
+//							),
+//					),
+//					"delivery"	=>	array(
+//							"name"	=>	"配送方式",
+//							"key"	=>	"delivery",
+//							"nodes"	=>	array(
+//									array("name"=>"重量列表","module"=>"WeightUnit","action"=>"index"),
+//									array("name"=>"配送方式列表","module"=>"Delivery","action"=>"index"),
+//									array("name"=>"配送地区列表","module"=>"DeliveryRegion","action"=>"index"),									
+//							),
+//					),
 					
 					
 // 					"balance"	=>	array(
