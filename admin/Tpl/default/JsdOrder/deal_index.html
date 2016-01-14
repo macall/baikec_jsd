@@ -19,7 +19,7 @@
 		{
 			$str = l("DEAL_ORDER_VIEW");
 		}
-		$str = "<a href='".u("DealOrder/view_order",array("id"=>$id))."'>".$str."</a>";
+		$str = "<a href='".u("JsdOrder/view_order",array("id"=>$id))."'>".$str."</a>";
 		if($order_info['order_status']==1)
 		{
 			$str.="&nbsp;&nbsp;<a href='javascript:del(".$id.");'>".l("DEL")."</a>";
@@ -113,12 +113,8 @@
 <div class="blank5"></div>
 <form name="search" action="__APP__" method="get">	
 <div class="button_row">
-	<input type="button" class="button" value="{%DEL}" onclick="del();" />
-	<input type="submit" class="button" value="{%SEARCH}" />
-	<if condition="!$_REQUEST['referer']">
-	<input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
-	</if>
-	<input type="button" class="button" value="{%BATCH_DELIVERY}" onclick="batch_delivery();" />
+        <input type="button" class="button" value="{%DEL}" onclick="del();" />
+<!--	<input type="button" class="button" value="{%BATCH_DELIVERY}" onclick="batch_delivery();" />
 	<input type="button" class="button" value="{%BATCH_PRINT}" onclick="batch_print();" />
 	
 	<lable>{%SELECT_EXPRESS}
@@ -128,16 +124,16 @@
 				<option value="{$express.id}">{$express.name}</option>
 			</foreach>
 		</select>
-	</lable>
+	</lable>-->
 </div>
 <div class="blank5"></div>
 <div class="search_row">
 
-		{%ORDER_SN}：<input type="text" class="textbox" name="order_sn" value="{:strim($_REQUEST['order_sn'])}" style="width:100px;" />
-		{%DEAL_ID}：<input type="text" class="textbox" name="deal_id" value="{:strim($_REQUEST['deal_id'])}" style="width:30px;" />
-		{%USER_NAME_S}：<input type="text" class="textbox" name="user_name" value="{:strim($_REQUEST['user_name'])}" style="width:100px;" />
-		<div class="blank5"></div>
-		{%PAYMENT_STATUS_S}: 
+		订单号：<input type="text" class="textbox" name="order_sn" value="{:strim($_REQUEST['order_sn'])}" style="width:100px;" />
+		<!--{%DEAL_ID}：<input type="text" class="textbox" name="deal_id" value="{:strim($_REQUEST['deal_id'])}" style="width:30px;" />-->
+		会员：<input type="text" class="textbox" name="user_name" value="{:strim($_REQUEST['user_name'])}" style="width:100px;" />
+		<!--<div class="blank5"></div>-->
+<!--		{%PAYMENT_STATUS_S}: 
 		<select name="pay_status">
 				<option value="-1" <if condition="intval($_REQUEST['pay_status']) eq -1">selected="selected"</if>>{%ALL}</option>
 				<option value="0" <if condition="intval($_REQUEST['pay_status']) eq 0">selected="selected"</if>>{%PAY_STATUS_0}</option>
@@ -183,10 +179,14 @@
 				<option value="-1" <if condition="intval($_REQUEST['order_status']) eq -1">selected="selected"</if>>全部</option>
 				<option value="0" <if condition="intval($_REQUEST['order_status']) eq 0">selected="selected"</if>>处理中</option>
 				<option value="1" <if condition="intval($_REQUEST['order_status']) eq 1">selected="selected"</if>>已完成</option>
-		</select>
+		</select>-->
 
-		<input type="hidden" value="DealOrder" name="m" />
+		<input type="hidden" value="JsdOrder" name="m" />
 		<input type="hidden" value="deal_index" name="a" />
+                <input type="submit" class="button" value="{%SEARCH}" />
+<!--                <if condition="!$_REQUEST['referer']">
+                <input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
+                </if>-->
 		
 
 </div>
@@ -199,10 +199,10 @@
 	checkbox="true" 
 	action="true" 
 	datasource="list" 
-	show="id:编号|50px,order_sn:订单编号,user_name:会员名称,user_name:会员手机
-                ,user_name:服务项目,total_price|format_price:服务价格
-                ,user_name:预约人,user_name:预约人手机,user_name:预约时间
-                ,user_name:预约地址,user_name:预约技师,user_name:预约备注"	 
+	show="id:编号|50px,order_sn:订单编号,create_time:订单创建时间,user_name:会员名称,user_mobile:会员手机
+                ,service_name:服务项目,service_price|format_price:服务单价,service_number:服务数量,service_total_price|format_price:服务总价
+                ,consignee:预约人,mobile:预约人手机,order_time:预约时间
+                ,province_id:预约地址,order_type:预约技师:edit,memo:预约备注"	 
 	actionlist="id|get_handle=$deal_order" /> 
 <!--show="id:{%ID}|50px,order_sn|get_order_item=$deal_order:{%ORDER_SN},user_name:{%USER_NAME},total_price|format_price:{%PAY_AMOUNT},pay_amount|format_price:{%PAID_AMOUNT}
 		 ,create_time|to_date:{%ORDER_CREATE_TIME}

@@ -8,6 +8,24 @@
 
 class JsdOrderAction extends CommonAction 
 {
+    private function _order_by($voList, $order_data, $sort_num) 
+    {
+        if (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == $order_data && isset($_REQUEST ['_sort']) && $_REQUEST ['_sort'] == $sort_num) {
+            $obj_list = array();
+            foreach ($voList as $value) {
+                $obj_list[] = $value[$order_data];
+            }
+            if ($sort_num == 1) {
+                $sort_flag = SORT_ASC;
+            } else {
+                $sort_flag = SORT_DESC;
+            }
+            array_multisort($obj_list, $sort_flag, $voList);
+        }
+
+        return $voList;
+    }
+
     public function deal_index() {
         $reminder = M("RemindCount")->find();
         $reminder['order_count_time'] = NOW_TIME;
@@ -98,11 +116,15 @@ class JsdOrderAction extends CommonAction
         }
         //取得满足条件的记录数
 
-
-
         $count = M("DealOrder")
                 ->where($where)
                 ->count();
+
+
+        //分页查询数据
+        if ((isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'user_mobile') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'service_name') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'service_price') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'service_number') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'service_total_price') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'province_id') || (isset($_REQUEST ['_order']) && $_REQUEST ['_order'] == 'order_type')) {
+            $order = DB_PREFIX . 'deal_order.id';
+        }
 
         if ($count > 0) {
             //创建分页对象
@@ -119,7 +141,65 @@ class JsdOrderAction extends CommonAction
                             ->field(DB_PREFIX . 'deal_order.*')
                             ->order($order . " " . $sort)
                             ->limit($p->firstRow . ',' . $p->listRows)->findAll();
+            foreach ($voList as $key => $value) {
+                $user = M("User")->where(array('id' => $value['user_id']))->find();
+                $value['user_mobile'] = $user['mobile'];
+                $value['create_time'] = date('Y-m-d H:i:s',$user['create_time']);
+                //服务基本信息
+                $deal = M("Deal")->where(array('id' => $value['deal_ids']))->find();
+                $value['service_name'] = $deal['sub_name'];
 
+                //服务详情
+                $order_item = M("DealOrderItem")->where(array('order_id' => $value['id']))->find();
+                $value['service_number'] = $order_item['number'];
+                $value['service_price'] = $order_item['unit_price'];
+                $value['service_total_price'] = $order_item['number'] * $order_item['unit_price'];
+
+                //拼接服务地址
+                $nation = M('DeliveryRegion')->where(array('id' => $value['region_lv1']))->find();
+                $province = M('DeliveryRegion')->where(array('id' => $value['region_lv2']))->find();
+                $city = M('DeliveryRegion')->where(array('id' => $value['region_lv3']))->find();
+                $district = M('DeliveryRegion')->where(array('id' => $value['region_lv4']))->find();
+                $addr = $nation['name'] . ' ' . $province['name'] . ' ' . $city['name'] . ' ' . $district['name'] . ' ' . $value['address'];
+                $value['province_id'] = $addr;
+
+                $value['order_time'] = date('Y-m-d H:i', strtotime($value['order_time']));
+
+                $tech = M('User')->where(array('id' => $value['technician_id']))->find();
+                //预约类型 1：技师直约 2：预约服务
+                if ($value['order_type'] == 1 && !empty($tech)) {
+                    $value['order_type'] = '技师直约（' . $tech['user_name'] . '）';
+                } elseif ($value['order_type'] == 2) {
+                    $value['order_type'] = "<span style='font-size:14px;color:red'>平台指派（未指派）</span>";
+                    if (!empty($tech)) {
+                        $value['order_type'] = '平台指派（' . $tech['user_name'] . '）';
+                    }
+                } else {
+                    $value['order_type'] = '无信息';
+                }
+
+                $voList[$key] = $value;
+            }
+            $voList = $this->_order_by($voList, 'user_mobile', 1);
+            $voList = $this->_order_by($voList, 'user_mobile', 0);
+
+            $voList = $this->_order_by($voList, 'service_name', 1);
+            $voList = $this->_order_by($voList, 'service_name', 0);
+
+            $voList = $this->_order_by($voList, 'service_price', 1);
+            $voList = $this->_order_by($voList, 'service_price', 0);
+
+            $voList = $this->_order_by($voList, 'service_number', 1);
+            $voList = $this->_order_by($voList, 'service_number', 0);
+
+            $voList = $this->_order_by($voList, 'service_total_price', 1);
+            $voList = $this->_order_by($voList, 'service_total_price', 0);
+
+            $voList = $this->_order_by($voList, 'province_id', 1);
+            $voList = $this->_order_by($voList, 'province_id', 0);
+
+            $voList = $this->_order_by($voList, 'order_type', 1);
+            $voList = $this->_order_by($voList, 'order_type', 0);
 
             //分页跳转的时候保证查询条件
             foreach ($map as $key => $val) {
@@ -550,10 +630,12 @@ class JsdOrderAction extends CommonAction
         if (!$order_info) {
             $this->error(l("INVALID_ORDER"));
         }
-        $order_deal_items = M("DealOrderItem")->where("order_id=" . $order_info['id'])->findAll();
-        foreach ($order_deal_items as $k => $v) {
-            $order_deal_items[$k]['is_delivery'] = M("Deal")->where("id=" . $v['deal_id'])->getField("is_delivery");
-        }
+        
+        $order_info['order_time'] = date('Y-m-d H:i',strtotime($order_info['order_time']));
+        
+        $tech = M('User')->where(array('id' => $order_info['technician_id']))->find();
+        $order_deal_items = M("DealOrderItem")->where("order_id=" . $order_info['id'])->find();
+        $order_deal_items['tech_name'] = $tech['user_name'];
         $this->assign("order_deals", $order_deal_items);
         $this->assign("order_info", $order_info);
 

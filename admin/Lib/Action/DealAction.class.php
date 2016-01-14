@@ -1526,7 +1526,11 @@ class DealAction extends CommonAction{
 	public function shop_add()
 	{
 		$this->assign("new_sort", M("Deal")->where("is_delete=0")->max("sort")+1);
-		
+                
+		$this->assign ( 'deal_tech_level', '0' );
+                $service_level = M('ServiceLevel')->findAll();
+                $this->assign ( 'service_level', $service_level );
+                    
 		$shop_cate_tree = M("ShopCate")->where('is_delete = 0')->findAll();
 		$shop_cate_tree = D("ShopCate")->toFormatTree($shop_cate_tree,'name');
 		$this->assign("shop_cate_tree",$shop_cate_tree);
@@ -1714,6 +1718,19 @@ class DealAction extends CommonAction{
 		
 		$list=M(MODULE_NAME)->add($data);
 		if (false !== $list) {
+                        if(isset($_REQUEST['level_ids'])){
+                            $inc_prices = $_REQUEST['inc_price'];
+                            $level_ids = $_REQUEST['level_ids'];
+                            foreach ($level_ids as $key => $value) {
+                                $deal_tech_level = array(
+                                    'level_id' => $value,
+                                    'deal_id' => $list,
+                                    'price' => $inc_prices[$key],
+                                    'createtime'=> time()
+                                );
+                                M('dealTechLevel')->add ($deal_tech_level);
+                            }
+                        }
 			//开始处理图片
 			$imgs = $_REQUEST['img'];
 			foreach($imgs as $k=>$v)
@@ -1867,9 +1884,21 @@ class DealAction extends CommonAction{
 		if($vo['buy_type']==1)
 		$vo['deal_score'] = abs($vo['return_score']);
 		$this->assign ( 'vo', $vo );
-		
-
-		
+                
+                $deal_tech_level = M('dealTechLevel')->where(array('deal_id'=>$id))->findAll();
+                if($deal_tech_level){
+                    foreach ($deal_tech_level as $key=>$value) {
+                        $level = M('ServiceLevel')->where(array('level_id'=>$value['level_id']))->find();
+                        $value['levelname']  = $level['levelname'];
+                        $deal_tech_level[$key] = $value;
+                    }
+                    $this->assign ( 'deal_tech_level', $deal_tech_level );
+                }else{
+                    $this->assign ( 'deal_tech_level', '0' );
+                    $service_level = M('ServiceLevel')->findAll();
+                    $this->assign ( 'service_level', $service_level );
+                }
+                
 		$shop_cate_tree = M("ShopCate")->where('is_delete = 0')->findAll();
 		$shop_cate_tree = D("ShopCate")->toFormatTree($shop_cate_tree,'name');
 		$this->assign("shop_cate_tree",$shop_cate_tree);
@@ -2110,6 +2139,30 @@ class DealAction extends CommonAction{
 			$data['deal_tag'] = 0;
 			$data['is_lottery'] = 0;
 		}
+                
+                $inc_prices = $_REQUEST['inc_price'];
+                if(isset($_REQUEST['level_ids'])){//无数据
+                    $level_ids = $_REQUEST['level_ids'];
+                    foreach ($level_ids as $key => $value) {
+                        $deal_tech_level = array(
+                            'level_id' => $value,
+                            'deal_id' => $data['id'],
+                            'price' => $inc_prices[$key],
+                            'createtime'=> time()
+                        );
+                        M('dealTechLevel')->add ($deal_tech_level);
+                    }
+                }elseif($_REQUEST['deal_tech_level_ids']){//有数据
+                    $deal_tech_level_ids = $_REQUEST['deal_tech_level_ids'];
+                    foreach ($deal_tech_level_ids as $key => $value) {
+                        $deal_tech_level = array(
+                            'id' => $value,
+                            'price' => $inc_prices[$key],
+                            'createtime'=> time()
+                        );
+                        M('dealTechLevel')->save ($deal_tech_level);
+                    }
+                }
 		// 更新数据
 		$list=M(MODULE_NAME)->save ($data);
 			if (false !== $list) {

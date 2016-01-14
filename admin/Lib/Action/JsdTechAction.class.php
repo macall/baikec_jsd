@@ -99,6 +99,16 @@ class JsdTechAction extends CommonAction
         );
         $manager_list = M("User")->where($manager_condition)->findAll();
         
+        //服务列表
+        $service_list_condition = array(
+            'is_effect'=>1,
+            'is_delete'=>0,
+        );
+        
+        $service_list = M("Deal")->where($service_list_condition)->findAll();
+        
+        
+        $this->assign("service_list", $service_list);
         $this->assign("manager_list", $manager_list);
         
         $this->display();
@@ -181,7 +191,15 @@ class JsdTechAction extends CommonAction
                 }
             }
         }
-        $user_id = intval($res['user_id']);
+        $user_id = intval($res['data']);
+        
+        if(isset($_REQUEST['tech_list'])){
+            $tech_list = ($_REQUEST['tech_list']);
+            foreach ($tech_list as $key => $value) {
+                M('DealTech')->add(array('tech_id'=>$user_id,'deal_id'=>$value));
+            }
+        }
+        
         foreach ($_REQUEST['auth'] as $k => $v) {
             foreach ($v as $item) {
                 $auth_data = array();
@@ -291,6 +309,25 @@ class JsdTechAction extends CommonAction
         }
         $this->assign('service_type_list', $service_type_list);
         
+        //服务列表
+        $service_list_condition = array(
+            'is_effect'=>1,
+            'is_delete'=>0,
+        );
+        $service_list = M("Deal")->where($service_list_condition)->findAll();
+        $deal_tech_list = M("DealTech")->where(array('tech_id'=>$id,'is_effect'=>1))->findAll();
+        
+        foreach ($service_list as $key => $value) {
+            foreach ($deal_tech_list as $key2 => $deal_tech) {
+                if($value['id'] == $deal_tech['deal_id']){
+                    $value['selected'] = 1;
+                }
+            }
+            
+            $service_list[$key] = $value;
+        }
+        
+        $this->assign('service_list', $service_list);
         $this->display();
     }
     public function update() 
@@ -338,6 +375,16 @@ class JsdTechAction extends CommonAction
                 }
             }
         }
+        
+        if(isset($_REQUEST['tech_list'])){
+            $tech_list = ($_REQUEST['tech_list']);
+            M('DealTech')->where(array('tech_id'=>$data['id']))->delete();
+            foreach ($tech_list as $key => $value) {
+                M('DealTech')->add(array('tech_id'=>$data['id'],'deal_id'=>$value));
+            }
+        }
+        
+        
         //开始更新is_effect状态
         M("User")->where("id=" . intval($_REQUEST['id']))->setField("is_effect", intval($_REQUEST['is_effect']));
         

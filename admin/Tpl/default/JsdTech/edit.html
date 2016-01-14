@@ -128,6 +128,19 @@
                     <lable>女<input type="radio" name="sex" value="0" <if condition="$vo.sex eq 0">checked="checked"</if>/></lable>
             </td>
         </tr>
+        <tr>
+            <td class="item_title">技能设置:</td>
+            <td class="item_input">
+                <foreach name="service_list" key="key" item="item">
+                    <label><input type="checkbox" name="tech_list[]" value="{$item.id}" <?php if($item['selected'] == 1)echo "checked";?>/>{$item.sub_name}</label>&nbsp;
+                    <?php
+                        if(($key+1)%8 == 0){
+                            echo "<br><br>";
+                        }
+                    ?>
+                </foreach>
+            </td>
+        </tr>
 	<tr>
 		<td class="item_title">设置密码:</td>
 		<td class="item_input"><input type="password" class="textbox" name="user_pwd" /></td>

@@ -495,7 +495,7 @@
 			<div id="filter"></div>
 		</td>
 	</tr>
-	<tr class="buy_type_0">
+<!--	<tr class="buy_type_0">
 		<td class="item_title">{%GOODS_TYPE}:</td>
 		<td class="item_input">
 			<select name="deal_goods_type">
@@ -510,6 +510,38 @@
 		<td class="item_title">{%GOODS_ATTR}:</td>
 		<td class="item_input">
 			<div id="deal_attr"></div>
+		</td>
+	</tr>-->
+        <tr>
+
+		<td class="item_title">商品属性:</td>
+		<td class="item_input">
+                    <!--<div id="deal_attr">-->
+                    <div>
+                        <div>
+                            <if condition="$deal_tech_level eq 0">
+                                <foreach name="service_level" item="item">
+                                    <span>{$item.levelname}</span>
+                                    <input type="hidden" value="{$item.id}" name="level_ids[{$item.id}]"/>
+                                    <span>递加价格:</span>
+                                    <input type="text" value="0" name="inc_price[{$item.id}]"/>
+    <!--                                <span>递加结算价:</span>
+                                    <input type="text" value="0" name="inc_final_price[]"/>-->
+                                    <br>
+                                </foreach>
+                            <else />
+                                <foreach name="deal_tech_level" item="item">
+                                    <span>{$item.levelname}</span>
+                                    <input type="hidden" value="{$item.id}" name="deal_tech_level_ids[{$item.id}]"/>
+                                    <span>递加价格:</span>
+                                    <input type="text" value="{$item.price}" name="inc_price[{$item.id}]"/>
+    <!--                                <span>递加结算价:</span>
+                                    <input type="text" value="0" name="inc_final_price[]"/>-->
+                                    <br>
+                                </foreach>
+                            </if>
+                        </div>
+                    </div>
 		</td>
 	</tr>
 	<tr>
