@@ -163,7 +163,7 @@ class JsdOrderAction extends CommonAction
                 $addr = $nation['name'] . ' ' . $province['name'] . ' ' . $city['name'] . ' ' . $district['name'] . ' ' . $value['address'];
                 $value['province_id'] = $addr;
 
-                $value['order_time'] = date('Y-m-d H:i', strtotime($value['order_time']));
+                $value['order_time'] = date('Y-m-d H:i', $value['order_time']);
 
                 $tech = M('User')->where(array('id' => $value['technician_id']))->find();
                 //预约类型 1：技师直约 2：预约服务
@@ -667,7 +667,95 @@ class JsdOrderAction extends CommonAction
 
         $this->display();
     }
+    
+    public function do_assign_tech(){
+        $order_id = intval($_REQUEST['order_id']);
+        $tech_id = intval($_REQUEST['tech_id']);
+        
+        $data = array(
+            'id'=>$order_id,
+            'technician_id'=>$tech_id,
+        );
+        
+        $res = M('DealOrder')->save($data);
+        if(!empty($res)){
+            $this->ajaxReturn(1);	
+        }
+        
+        $this->ajaxReturn(0);	
+//        $tech_data = array(
+//            'id'=>$tech_id,
+//            'technician_time_status'=>3//设置为工作
+//        );
+//        M('User')->save($data);
+    }
 
+    public function get_tech_order_list()
+    {
+            $tech_id = intval($_REQUEST['tech_id']);
+            $condition = array(
+                'order_status' =>0,
+                'is_delete'=>0,
+                'extra_status'=>0,
+                'after_sale'=>0,
+                'refund_status'=>0,
+                'technician_id'=>$tech_id
+            );
+            
+            $tech_order = M('DealOrder')->where($condition)->order('order_time asc')->findAll();
+//            
+//            
+//            echo M('DealOrder')->getLastSql();
+//            exit;
+            foreach ($tech_order as $key => $value) {
+                $value['order_time'] = date('Y-m-d H:i',$value['order_time']);
+                $value['order_end_time'] = date('Y-m-d H:i',$value['order_end_time']);
+                
+                $tech_order[$key] = $value;
+            }
+            
+            
+            $this->ajaxReturn($tech_order);	
+    }
+    
+    public function assign_tech(){
+        $order_id = intval($_REQUEST['id']);
+        
+        $order = M('DealOrder')->where(array('id'=>$order_id))->find();
+        $now_order = date('Y-m-d H:i',$order['order_time']);
+        $now_order_end = date('Y-m-d H:i',$order['order_end_time']);
+        $deal_tech_list = M('DealTech')->where(array('deal_id'=>$order['deal_ids']))->findAll();
+        
+        $this->assign("order_id", $order_id);
+        $this->assign("now_order", $now_order);
+        $this->assign("now_order_end", $now_order_end);
+        
+        foreach ($deal_tech_list as $key => $value) {
+            $tech = M('User')->where(array('id'=>$value['tech_id']))->find();
+            $value['tech_name'] = $tech['user_name'];
+            
+            $deal_tech_list[$key] = $value;
+        }
+        
+//        //检查技师是否可约/可指派
+//        $usable_tech_list = array();
+//        foreach ($deal_tech_list as $key => $value) {
+//            
+////            $tech = M('User')->where(array('id'=>$value['tech_id']))->find();
+//            
+//            $tech_info=array();
+//            $tech_info['tech_id'] = $tech['id'];
+//            
+//            
+//            $usable_tech_list[$key] = $tech_info;
+//            
+//        }
+        
+        $this->assign("deal_tech_list", $deal_tech_list);
+
+        $this->display();
+    }
+    
     public function view_order_history() {
         $id = intval($_REQUEST['id']);
         $order_info = M("DealOrderHistory")->where("id=" . $id . " and type = 0")->find();
